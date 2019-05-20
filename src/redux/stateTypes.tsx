@@ -1,3 +1,5 @@
+import { Character, Filters, Gear, SavedGear } from '../../types/common'
+
 enum Role {
   MELEE = "MELEE",
   ATTACKER = "ATTACKER",
@@ -12,40 +14,17 @@ enum Role {
   DISPEL = "DISPEL",
 }
 
-type Gear = {
-  name: {
-    en: string,
-    jp: string,
+interface StateProps {
+  gears: Gear[],
+  characters: Character[],
+  savedGears: SavedGear[],
+  filteredGears: Gear[],
+  filters: {
+    role: string[],
+    name?: string,
   },
-  icon: string,
-  character: {
-    name: string,
-    icon: string,
-  },
+  fetchingGears: boolean,
+  characterRoles: string[],
 }
 
-type Character = {
-  profile: {
-    traits: {
-      role: Role[],
-    },
-  },
-}
-
-type SavedGear = {
-  icon: string,
-  limitBreakLevel: number,
-}
-
-type Filter = {
-  role: Role[],
-  name: string,
-}
-
-export {
-  Role,
-  Gear,
-  Character,
-  SavedGear,
-  Filter,
-}
+export default StateProps

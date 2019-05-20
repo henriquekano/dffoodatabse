@@ -51,7 +51,8 @@ const filterGears = (state) => {
     R.filter(
       R.pipe(
         R.prop('rolesIntersection'),
-        R.complement(R.isEmpty),
+        R.length,
+        R.equals(roleFilters.length),
       ),
     ),
     R.pluck('name'),

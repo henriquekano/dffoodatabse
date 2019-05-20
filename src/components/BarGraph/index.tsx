@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { processColor } from 'react-native'
-import { SavedGear, Character, Gear } from '../../redux/stateTypes'
-
-const { BarChart } = require('react-native-charts-wrapper')
+import { processColor, ScrollView, View, Text } from 'react-native'
+import { SavedGear, Character, Gear } from '../../../types/common'
+import { BarChart, Grid, XAxis, YAxis } from 'react-native-svg-charts'
+import * as scale from 'd3-scale'
 
 export interface Props {
   roles: string[],
@@ -11,45 +11,83 @@ export interface Props {
   gears: Gear[],
 }
 
+const styles = {
+  leftColumn: {
+    flex: 1,
+  },
+  rightColumn: {
+    flex: 9,
+  },
+}
+
+// const CUT_OFF = 50
+// const Labels = ({  x, y, bandwidth, data }) => (
+//   data.map((value, index) => (
+//       <Text
+//           key={ index }
+//           x={ value > CUT_OFF ? x(0) + 10 : x(value) + 10 }
+//           y={ y(index) + (bandwidth / 2) }
+//           fontSize={ 14 }
+//           fill={ value > CUT_OFF ? 'white' : 'black' }
+//           alignmentBaseline={ 'middle' }
+//       >
+//           {value}
+//       </Text>
+//   ))
+// )
+
 const BarGraph = (props: Props) => {
+  const {
+    gears,
+    roles,
+  } = props
+  console.log(props)
+  const yAxisLabels = [0, 1, 2, 3, 4, 5]
+  const yAxisLabelsNames = ['label 1','label 2','label 3','label 4','label 5','label 6',]
   return (
-    <BarChart
-      style={{
-        flex: 1,
-      }}
-      data={{
-        dataSets: [{
-          values: [{y: 100}, {y: 105}, {y: 102}, {y: 110}, {y: 114}, {y: 109}, {y: 105}, {y: 99}, {y: 95}],
-          label: '',
-        }],
-        config: {
-          barWidth: 0.7,
-        },
-      }}
-      xAxis={{
-        valueFormatter: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-        granularityEnabled: false,
-        granularity: 1,
-      }}
-      animation={{durationX: 1000}}
-      legend={{
-        enabled: false,
-        textSize: 14,
-        form: 'SQUARE',
-        formSize: 14,
-        xEntrySpace: 10,
-        yEntrySpace: 5,
-        formToTextSpace: 5,
-        wordWrapEnabled: true,
-        maxSizePercent: 0.5
-      }}
-      gridBackgroundColor={processColor('#ffffff')}
-      visibleRange={{x: { min: 8, max: 8 }}}
-      drawBarShadow={false}
-      drawValueAboveBar
-      drawHighlightArrow
-      highlights={[{x: 3}, {x: 6}]}
-    />
+    <View style={{ flex: 1, padding: 20 }}>
+      <View style={{ flexDirection: 'row' }}>
+        <View style={styles.leftColumn}/>
+        <XAxis
+          style={styles.rightColumn}
+          data={[ 1, 2, 3, 4, 5, 6 ]}
+          // contentInset={{ left: 10, right: 10 }}
+          svg={{
+            fill: 'grey',
+            fontSize: 10,
+          }}
+          formatLabel={ value => `${value}` }
+        />
+      </View>
+      <View style={{ flex: 1, flexDirection: 'row' }}>
+        <YAxis
+          style={styles.leftColumn}
+          data={yAxisLabels}
+          scale={scale.scaleBand}
+          svg={{
+            fill: 'grey',
+            fontSize: 10,
+          }}
+          numberOfTicks={yAxisLabels.length}
+          formatLabel={(value: number) => `${yAxisLabelsNames[value]}` }
+        />
+        <BarChart
+          style={styles.rightColumn}
+          data={[ 50, 10, 40, 95, 85 ]}
+          svg={{ fill: 'rgb(134, 65, 244)' }}
+          contentInset={{ righ: 30, left: 30, top: 30, bottom: 30 }}
+          animate
+          horizontal
+          animationDuration={2000}
+          numberOfTicks={6}
+        >
+          <Grid
+            direction={Grid.Direction.VERTICAL}
+          />
+          {/* <Labels /> */}
+        </BarChart>
+      </View>
+    </View>
   )
 }
 

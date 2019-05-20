@@ -74,7 +74,7 @@ class SnappyScrollView extends PureComponent {
   }
 
   renderPage = (currentPageData, keyComplement) => {
-    const { renderItem } = this.props
+    const { renderItem, itemsPerPage } = this.props
     const numberOfColumns = 2
     const columnizedData = currentPageData && R.splitEvery(numberOfColumns, currentPageData)
     return (
@@ -87,7 +87,7 @@ class SnappyScrollView extends PureComponent {
             ? (
               columnizedData.map(column => (
                 <View
-                  style={{ flex: 1, flexDirection: 'row' }}
+                  style={{ flexDirection: 'row', height: `${100 / (itemsPerPage / 2)}%` }}
                   key={`SnappyScrollView-renderPage-currentPageData.map-${JSON.stringify(column)}`}
                 >
                   {

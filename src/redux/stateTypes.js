@@ -14,4 +14,3 @@ var Role;
     Role["CHASER"] = "CHASER";
     Role["DISPEL"] = "DISPEL";
 })(Role || (Role = {}));
-exports.Role = Role;

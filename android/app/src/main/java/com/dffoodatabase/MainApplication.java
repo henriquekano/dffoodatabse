@@ -5,11 +5,10 @@ import com.dffoodatabase.DevMenuPackage;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.horcrux.svg.SvgPackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
-import com.github.wuxudong.rncharts.MPAndroidChartPackage;
 import com.reactnativecommunity.viewpager.RNCViewPagerPackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
-import com.RNFetchBlob.RNFetchBlobPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
@@ -34,11 +33,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new SvgPackage(),
             new FastImageViewPackage(),
-            new MPAndroidChartPackage(),
             new RNCViewPagerPackage(),
             new NetInfoPackage(),
-            new RNFetchBlobPackage(),
             new AsyncStoragePackage(),
             new VectorIconsPackage(),
             new DevMenuPackage(this)
