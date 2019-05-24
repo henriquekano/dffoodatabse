@@ -1,14 +1,19 @@
 import * as React from 'react'
 import { PureComponent } from 'react'
 import { View, TouchableOpacity } from 'react-native'
-import { Icon } from 'react-native-elements'
+import { Icon, Text } from 'react-native-elements'
 import { RouteComponentProps } from 'react-router-native'
 import { connect } from 'react-redux'
 import R from 'ramda'
 import { BarGraph, Header } from '../../components'
-import StateProps from '../../redux/stateTypes'
+import { Gear, Character, SavedGear } from '../../../types/common'
 
-export interface Props extends RouteComponentProps, StateProps {}
+export interface Props extends RouteComponentProps {
+  characters: Character[],
+  gears: Gear[],
+  characterRoles: string[],
+  savedGears: SavedGear[],
+}
 
 class Insights extends PureComponent<Props> {
   render = () => {
@@ -21,7 +26,7 @@ class Insights extends PureComponent<Props> {
       savedGears,
     } = this.props
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, justifyContent: 'center' }}>
         <Header
           leftComponent={(
             <TouchableOpacity
@@ -37,10 +42,13 @@ class Insights extends PureComponent<Props> {
             </TouchableOpacity>
           )}
         />
+        <Text style={{ textAlign: 'center' }}>
+          Character Roles VS owned gears
+        </Text>
         <BarGraph
           characters={characters}
           gears={gears}
-          roles={characterRoles}
+          characterRoles={characterRoles}
           savedGears={savedGears}
         />
       </View>

@@ -1,17 +1,16 @@
-import AsyncStorage from '@react-native-community/async-storage'
-import { persistStore, persistReducer } from 'redux-persist'
-
-const persistConfig = {
-  key: 'root',
-  storage: AsyncStorage,
-  blacklist: ['viewMode'],
-}
-
-const wrapReducerForPersistance = reducer => persistReducer(persistConfig, reducer)
-
-const wrapStoreForPersistance = persistStore
-
-export {
-  wrapReducerForPersistance,
-  wrapStoreForPersistance,
-}
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var async_storage_1 = __importDefault(require("@react-native-community/async-storage"));
+var redux_persist_1 = require("redux-persist");
+var persistConfig = {
+    key: 'root',
+    storage: async_storage_1.default,
+    blacklist: ['viewMode'],
+};
+var wrapReducerForPersistance = function (reducer) { return redux_persist_1.persistReducer(persistConfig, reducer); };
+exports.wrapReducerForPersistance = wrapReducerForPersistance;
+var wrapStoreForPersistance = redux_persist_1.persistStore;
+exports.wrapStoreForPersistance = wrapStoreForPersistance;

@@ -15,14 +15,15 @@ enum Role {
 }
 
 interface StateProps {
-  gears: Gear[],
-  characters: Character[],
+  gears?: Gear[],
+  characters?: Character[],
   savedGears: SavedGear[],
   filteredGears: Gear[],
   filters: {
     role: string[],
-    name?: string,
+    characterNameFilter?: string,
   },
+  fetchError?: any,
   fetchingGears: boolean,
   characterRoles: string[],
 }

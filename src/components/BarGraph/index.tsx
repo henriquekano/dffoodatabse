@@ -1,11 +1,18 @@
 import * as React from 'react'
-import { processColor, ScrollView, View, Text } from 'react-native'
+import { Fragment } from 'react'
+import { View, StyleSheet } from 'react-native'
 import { SavedGear, Character, Gear } from '../../../types/common'
-import { BarChart, Grid, XAxis, YAxis } from 'react-native-svg-charts'
+import { Grid, YAxis } from 'react-native-svg-charts'
+import { Text } from 'react-native-svg'
 import * as scale from 'd3-scale'
+import { calculateGearDistribuitionByRole, AxisPoint } from '../../repository'
+
+const { BarChart } = require('react-native-svg-charts')
+
+const R = require('ramda')
 
 export interface Props {
-  roles: string[],
+  characterRoles: string[],
   savedGears: SavedGear[],
   characters: Character[],
   gears: Gear[],
@@ -13,78 +20,86 @@ export interface Props {
 
 const styles = {
   leftColumn: {
-    flex: 1,
   },
   rightColumn: {
-    flex: 9,
+    flex: 1,
   },
 }
 
-// const CUT_OFF = 50
-// const Labels = ({  x, y, bandwidth, data }) => (
-//   data.map((value, index) => (
-//       <Text
-//           key={ index }
-//           x={ value > CUT_OFF ? x(0) + 10 : x(value) + 10 }
-//           y={ y(index) + (bandwidth / 2) }
-//           fontSize={ 14 }
-//           fill={ value > CUT_OFF ? 'white' : 'black' }
-//           alignmentBaseline={ 'middle' }
-//       >
-//           {value}
-//       </Text>
-//   ))
-// )
+interface LabelsProps {
+  x: (arg: number) => number,
+  y: (arg: number) => number,
+  bandwidth: number,
+  data: any[],
+}
+const Labels: React.StatelessComponent<LabelsProps> = (
+  { x, y, bandwidth, data }: LabelsProps
+) => (
+  <Fragment>
+    {
+      data.map((value, index) => (
+        <Text
+          key={index}
+          x={x(value) + 10}
+          y={y(index) + (bandwidth / 2)}
+          fontSize={14}
+          fill="black"
+          alignmentBaseline="middle"
+        >
+          {value}
+        </Text>
+      ))
+    }
+  </Fragment>
+)
 
-const BarGraph = (props: Props) => {
+const BarGraph = (props: Props): React.ReactNode => {
   const {
-    gears,
-    roles,
-  } = props
-  console.log(props)
-  const yAxisLabels = [0, 1, 2, 3, 4, 5]
-  const yAxisLabelsNames = ['label 1','label 2','label 3','label 4','label 5','label 6',]
+    data,
+    maxXAxis,
+    yAxis,
+  } = calculateGearDistribuitionByRole(props)
+
   return (
     <View style={{ flex: 1, padding: 20 }}>
-      <View style={{ flexDirection: 'row' }}>
-        <View style={styles.leftColumn}/>
-        <XAxis
-          style={styles.rightColumn}
-          data={[ 1, 2, 3, 4, 5, 6 ]}
-          // contentInset={{ left: 10, right: 10 }}
-          svg={{
-            fill: 'grey',
-            fontSize: 10,
-          }}
-          formatLabel={ value => `${value}` }
-        />
-      </View>
       <View style={{ flex: 1, flexDirection: 'row' }}>
         <YAxis
           style={styles.leftColumn}
-          data={yAxisLabels}
+          yAccessor={({ index }) => index}
+          data={yAxis}
           scale={scale.scaleBand}
           svg={{
             fill: 'grey',
             fontSize: 10,
           }}
-          numberOfTicks={yAxisLabels.length}
-          formatLabel={(value: number) => `${yAxisLabelsNames[value]}` }
+          numberOfTicks={yAxis.length}
+          formatLabel={(_, index) => yAxis[ index ].label}
         />
         <BarChart
-          style={styles.rightColumn}
-          data={[ 50, 10, 40, 95, 85 ]}
+          style={[styles.rightColumn, {
+            borderLeftWidth: StyleSheet.hairlineWidth,
+            borderColor: 'black'
+          }]}
+          data={R.pluck('value', data)}
           svg={{ fill: 'rgb(134, 65, 244)' }}
-          contentInset={{ righ: 30, left: 30, top: 30, bottom: 30 }}
+          // contentInset={{ righ: 30, left: 30, top: 30, bottom: 30 }}
           animate
           horizontal
+          gridMin={0}
+          gridMax={maxXAxis}
+          numberOfTicks={5}
           animationDuration={2000}
-          numberOfTicks={6}
         >
+          {/* These values are all not used. The svg-chart makes magic behind the scenes */}
           <Grid
             direction={Grid.Direction.VERTICAL}
           />
-          {/* <Labels /> */}
+          <Labels
+            x={() => 1}
+            y={() => 1}
+            bandwidth={1}
+            data={[]}
+          />
         </BarChart>
       </View>
     </View>

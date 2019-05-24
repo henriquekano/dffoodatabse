@@ -15,7 +15,7 @@ var react_native_1 = require("react-native");
 var react_native_elements_1 = require("react-native-elements");
 var ramda_1 = __importDefault(require("ramda"));
 var ModalFilter = function (props) {
-    var filterOpen = props.filterOpen, characterRoles = props.characterRoles, rolesFilter = props.filters.role, onPressRole = props.onPressRole, onApply = props.onApply, onClose = props.onClose;
+    var filterOpen = props.filterOpen, characterRoles = props.characterRoles, rolesFilter = props.filters.role, onPressRole = props.onPressRole, onApply = props.onApply, onClose = props.onClose, onTypeCharacterName = props.onTypeCharacterName;
     var chipSelectedStyle = {
         backgroundColor: '#3D6DCC',
     };
@@ -30,7 +30,7 @@ var ModalFilter = function (props) {
         <react_native_1.View style={{ flexDirection: 'row', backgroundColor: '#3D6DCC', padding: 10 }}>
           <react_native_elements_1.Text style={{ color: 'white' }}>Character Name</react_native_elements_1.Text>
         </react_native_1.View>
-        <react_native_elements_1.Input style={{ marginBottom: 10 }} placeholder="Marche"/>
+        <react_native_elements_1.Input onChangeText={onTypeCharacterName} style={{ marginBottom: 10 }} placeholder="Marche"/>
         <react_native_1.View style={{ flexDirection: 'row', backgroundColor: '#3D6DCC', padding: 10 }}>
           <react_native_elements_1.Text style={{ color: 'white' }}>Character Role</react_native_elements_1.Text>
         </react_native_1.View>

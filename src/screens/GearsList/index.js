@@ -5,10 +5,8 @@ import {
 } from 'react-native'
 import {
   Text,
-  Button,
 } from 'react-native-elements'
 import { connect } from 'react-redux'
-import { Link, NativeRouterProps } from 'react-router-native'
 import R from 'ramda'
 import {
   GearView,
@@ -16,7 +14,6 @@ import {
   SnappyScrollView,
   ModalFilter,
   Header,
-  BarGraph,
 } from '../../components'
 import { store } from '../../redux/store'
 import {
@@ -36,6 +33,7 @@ class GearList extends PureComponent {
     // and causes the button to respond slowlly
     this.state = {
       filterOpen: false,
+      nameFilter: null,
     }
   }
 
@@ -53,6 +51,12 @@ class GearList extends PureComponent {
   handleOpenFilter = () => {
     this.setState({
       filterOpen: true,
+    })
+  }
+
+  handleNameFilterType = (name) => {
+    this.setState({
+      nameFilter: name,
     })
   }
 
@@ -102,7 +106,7 @@ class GearList extends PureComponent {
         R.pathEq(['gear', 'icon'], thisGearIcon),
       ),
       R.head,
-      R.propOr(0, 'limitBreakLevel'),
+      R.propOr(-1, 'limitBreakLevel'),
     )(savedGears)
     return (
       <View
@@ -140,11 +144,17 @@ class GearList extends PureComponent {
   }
 
   closeFilterModal = () => {
+    const {
+      nameFilter,
+    } = this.state
     this.setState(
       {
         filterOpen: false,
+        nameFilter: null,
       },
-      () => store.dispatch(applyFilters()),
+      () => store.dispatch(applyFilters({
+        characterNameFilter: nameFilter,
+      })),
     )
   }
 
@@ -176,26 +186,8 @@ class GearList extends PureComponent {
         onApply={this.closeFilterModal}
         onClose={this.handleCloseFilter}
         onPressRole={this.addRoleFilter}
+        onTypeCharacterName={this.handleNameFilterType}
       />
-    )
-  }
-
-  renderSomeGraph = () => {
-    const {
-      gears,
-      characters,
-      savedGears,
-      characterRoles,
-    } = this.props
-    return (
-      <View style={{ flex: 1 }}>
-        <BarGraph
-          roles={characterRoles}
-          savedGears={savedGears}
-          characters={characters}
-          gears={gears}
-        />
-      </View>
     )
   }
 

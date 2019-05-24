@@ -6,4 +6,4 @@ adb reverse tcp:7007 tcp:7007
 adb reverse tcp:8097 tcp:8097
 
 yarn prestorybook
-application=storybook react-native start --reset-cache
+yarn buildAndStartStorybook

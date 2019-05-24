@@ -36,14 +36,17 @@ var Insights = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.render = function () {
             var _a = _this.props, history = _a.history, match = _a.match, characters = _a.characters, gears = _a.gears, characterRoles = _a.characterRoles, savedGears = _a.savedGears;
-            return (<react_native_1.View style={{ flex: 1 }}>
+            return (<react_native_1.View style={{ flex: 1, justifyContent: 'center' }}>
         <components_1.Header leftComponent={(<react_native_1.TouchableOpacity onPress={function () {
                 console.log(match);
                 history.goBack();
             }}>
               <react_native_elements_1.Icon name="arrow-back" color="white"/>
             </react_native_1.TouchableOpacity>)}/>
-        <components_1.BarGraph characters={characters} gears={gears} roles={characterRoles} savedGears={savedGears}/>
+        <react_native_elements_1.Text style={{ textAlign: 'center' }}>
+          Character Roles VS owned gears
+        </react_native_elements_1.Text>
+        <components_1.BarGraph characters={characters} gears={gears} characterRoles={characterRoles} savedGears={savedGears}/>
       </react_native_1.View>);
         };
         return _this;

@@ -1,5 +1,11 @@
 import * as React from 'react'
-import { TouchableOpacity, View, Modal } from 'react-native'
+import {
+  TouchableOpacity,
+  View,
+  Modal,
+  NativeSyntheticEvent,
+  TextInputEndEditingEventData,
+} from 'react-native'
 import {
   Icon,
   Text,
@@ -19,6 +25,7 @@ export interface Props {
   onPressRole: (role: string) => void,
   onApply: () => void,
   onClose: () => void,
+  onTypeCharacterName: (name: string) => void,
 }
 
 const ModalFilter = (props: Props) => {
@@ -29,6 +36,7 @@ const ModalFilter = (props: Props) => {
     onPressRole,
     onApply,
     onClose,
+    onTypeCharacterName,
   } = props
   const chipSelectedStyle = {
     backgroundColor: '#3D6DCC',
@@ -52,7 +60,10 @@ const ModalFilter = (props: Props) => {
         <View style={{ flexDirection: 'row', backgroundColor: '#3D6DCC', padding: 10 }}>
           <Text style={{ color: 'white' }}>Character Name</Text>
         </View>
-        <Input style={{ marginBottom: 10 }} placeholder="Marche" />
+        <Input
+          onChangeText={onTypeCharacterName}
+          style={{ marginBottom: 10 }} placeholder="Marche"
+        />
         <View style={{ flexDirection: 'row', backgroundColor: '#3D6DCC', padding: 10 }}>
           <Text style={{ color: 'white' }}>Character Role</Text>
         </View>

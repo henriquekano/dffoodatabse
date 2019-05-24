@@ -8,56 +8,49 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __importStar(require("react"));
+var react_1 = require("react");
 var react_native_1 = require("react-native");
 var react_native_svg_charts_1 = require("react-native-svg-charts");
+var react_native_svg_1 = require("react-native-svg");
 var scale = __importStar(require("d3-scale"));
+var repository_1 = require("../../repository");
+var BarChart = require('react-native-svg-charts').BarChart;
+var R = require('ramda');
 var styles = {
-    leftColumn: {
+    leftColumn: {},
+    rightColumn: {
         flex: 1,
     },
-    rightColumn: {
-        flex: 9,
-    },
 };
-// const CUT_OFF = 50
-// const Labels = ({  x, y, bandwidth, data }) => (
-//   data.map((value, index) => (
-//       <Text
-//           key={ index }
-//           x={ value > CUT_OFF ? x(0) + 10 : x(value) + 10 }
-//           y={ y(index) + (bandwidth / 2) }
-//           fontSize={ 14 }
-//           fill={ value > CUT_OFF ? 'white' : 'black' }
-//           alignmentBaseline={ 'middle' }
-//       >
-//           {value}
-//       </Text>
-//   ))
-// )
+var Labels = function (_a) {
+    var x = _a.x, y = _a.y, bandwidth = _a.bandwidth, data = _a.data;
+    return (<react_1.Fragment>
+    {data.map(function (value, index) { return (<react_native_svg_1.Text key={index} x={x(value) + 10} y={y(index) + (bandwidth / 2)} fontSize={14} fill="black" alignmentBaseline="middle">
+          {value}
+        </react_native_svg_1.Text>); })}
+  </react_1.Fragment>);
+};
 var BarGraph = function (props) {
-    var gears = props.gears, roles = props.roles;
-    console.log(props);
-    var yAxisLabels = [0, 1, 2, 3, 4, 5];
-    var yAxisLabelsNames = ['label 1', 'label 2', 'label 3', 'label 4', 'label 5', 'label 6',];
+    var _a = repository_1.calculateGearDistribuitionByRole(props), data = _a.data, maxXAxis = _a.maxXAxis, yAxis = _a.yAxis;
     return (<react_native_1.View style={{ flex: 1, padding: 20 }}>
-      <react_native_1.View style={{ flexDirection: 'row' }}>
-        <react_native_1.View style={styles.leftColumn}/>
-        <react_native_svg_charts_1.XAxis style={styles.rightColumn} data={[1, 2, 3, 4, 5, 6]} 
-    // contentInset={{ left: 10, right: 10 }}
-    svg={{
-        fill: 'grey',
-        fontSize: 10,
-    }} formatLabel={function (value) { return "" + value; }}/>
-      </react_native_1.View>
       <react_native_1.View style={{ flex: 1, flexDirection: 'row' }}>
-        <react_native_svg_charts_1.YAxis style={styles.leftColumn} data={yAxisLabels} scale={scale.scaleBand} svg={{
+        <react_native_svg_charts_1.YAxis style={styles.leftColumn} yAccessor={function (_a) {
+        var index = _a.index;
+        return index;
+    }} data={yAxis} scale={scale.scaleBand} svg={{
         fill: 'grey',
         fontSize: 10,
-    }} numberOfTicks={yAxisLabels.length} formatLabel={function (value) { return "" + yAxisLabelsNames[value]; }}/>
-        <react_native_svg_charts_1.BarChart style={styles.rightColumn} data={[50, 10, 40, 95, 85]} svg={{ fill: 'rgb(134, 65, 244)' }} contentInset={{ righ: 30, left: 30, top: 30, bottom: 30 }} animate horizontal animationDuration={2000} numberOfTicks={6}>
-          <react_native_svg_charts_1.Grid direction={react_native_svg_charts_1.Grid.Direction.VERTICAL}/>
+    }} numberOfTicks={yAxis.length} formatLabel={function (_, index) { return yAxis[index].label; }}/>
+        <BarChart style={[styles.rightColumn, {
+            borderLeftWidth: react_native_1.StyleSheet.hairlineWidth,
+            borderColor: 'black'
+        }]} data={R.pluck('value', data)} svg={{ fill: 'rgb(134, 65, 244)' }} 
+    // contentInset={{ righ: 30, left: 30, top: 30, bottom: 30 }}
+    animate horizontal gridMin={0} gridMax={maxXAxis} numberOfTicks={5} animationDuration={2000}>
           
-        </react_native_svg_charts_1.BarChart>
+          <react_native_svg_charts_1.Grid direction={react_native_svg_charts_1.Grid.Direction.VERTICAL}/>
+          <Labels x={function () { return 1; }} y={function () { return 1; }} bandwidth={1} data={[]}/>
+        </BarChart>
       </react_native_1.View>
     </react_native_1.View>);
 };
