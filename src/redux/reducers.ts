@@ -2,13 +2,9 @@ import {
   GET_GAME_INFORMATION,
   GET_GAME_INFORMATION_FAIL,
   GET_GAME_INFORMATION_SUCCESS,
-  CHANGE_GEAR_VIEW_MODE,
   SAVE_OWNED_GEAR,
-  ADD_ROLE_FILTER,
-  REMOVE_ROLE_FILTER,
   APPLY_FILTERS,
   Action,
-  RoleAction,
   FetchAction,
   ErrorAction,
   SaveGearAction,
@@ -37,30 +33,6 @@ const initialState: StateProps = {
 
 const reducer = (state: StateProps = initialState, action: Action) => {
   switch (action.type) {
-  case ADD_ROLE_FILTER:
-    // filterGears(state)
-    return {
-      ...state,
-      filters: {
-        ...state.filters,
-        role: R.uniq([
-          ...state.filters.role,
-          (action as RoleAction).role,
-        ]),
-      },
-    }
-  case REMOVE_ROLE_FILTER:
-    // filterGears(state)
-    return {
-      ...state,
-      filters: {
-        ...state.filters,
-        role: R.without(
-          [(action as RoleAction).role],
-          state.filters.role,
-        ),
-      },
-    }
   case APPLY_FILTERS:
     // filterGears(state)
     return {
@@ -68,7 +40,7 @@ const reducer = (state: StateProps = initialState, action: Action) => {
       filteredGears: filterGears({
         ...state,
         filters: {
-          ...state.filters,
+          role: (action as ApplyFiltersAction).roleFilter,
           characterNameFilter: (action as ApplyFiltersAction).characterNameFilter,
         }
       }),

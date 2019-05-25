@@ -6,9 +6,6 @@ const GET_GAME_INFORMATION = 'GET_GAME_INFORMATION'
 const GET_GAME_INFORMATION_SUCCESS = 'GET_GAME_INFORMATION_SUCCESS'
 const GET_GAME_INFORMATION_FAIL = 'GET_GAME_INFORMATION_FAIL'
 const SAVE_OWNED_GEAR = 'SAVE_OWNED_GEAR'
-const CHANGE_GEAR_VIEW_MODE = 'CHANGE_GEAR_VIEW_MODE'
-const ADD_ROLE_FILTER = 'ADD_ROLE_FILTER'
-const REMOVE_ROLE_FILTER = 'REMOVE_ROLE_FILTER'
 const APPLY_FILTERS = 'APPLY_FILTERS'
 const ADD_NAME_FILTER = 'ADD_NAME_FILTER'
 
@@ -17,9 +14,6 @@ export type ActionType = 'GET_GAME_INFORMATION'
   | 'GET_GAME_INFORMATION_FAIL'
   | 'GET_GAME_INFORMATION_SUCCESS'
   | 'SAVE_OWNED_GEAR'
-  | 'CHANGE_GEAR_VIEW_MODE'
-  | 'ADD_ROLE_FILTER'
-  | 'REMOVE_ROLE_FILTER'
   | 'APPLY_FILTERS'
   | 'ADD_NAME_FILTER'
 
@@ -33,6 +27,7 @@ export interface RoleAction extends BaseAction {
 
 export interface ApplyFiltersAction extends BaseAction {
   characterNameFilter: string,
+  roleFilter: string[],
 }
 
 export interface FetchAction extends BaseAction {
@@ -50,19 +45,12 @@ export interface SaveGearAction extends BaseAction {
 
 export type Action = BaseAction | RoleAction | FetchAction | ErrorAction | SaveGearAction
 
-const applyFilters = ({ characterNameFilter }: { characterNameFilter: string }): ApplyFiltersAction => ({
+const applyFilters = (
+  { characterNameFilter, roleFilter }: { characterNameFilter: string, roleFilter: string[] }
+): ApplyFiltersAction => ({
   type: APPLY_FILTERS,
   characterNameFilter,
-})
-
-const addRoleFilter = (role: string): RoleAction => ({
-  type: ADD_ROLE_FILTER,
-  role,
-})
-
-const removeRoleFilter = (role: string): RoleAction => ({
-  type: REMOVE_ROLE_FILTER,
-  role,
+  roleFilter,
 })
 
 const getGameInformation = (): BaseAction => ({
@@ -106,15 +94,10 @@ export {
   getGameInformation,
   saveOwnedGear,
   fetchFromDissidiadb,
-  addRoleFilter,
-  removeRoleFilter,
   applyFilters,
   GET_GAME_INFORMATION,
   GET_GAME_INFORMATION_FAIL,
   GET_GAME_INFORMATION_SUCCESS,
   SAVE_OWNED_GEAR,
-  CHANGE_GEAR_VIEW_MODE,
-  ADD_ROLE_FILTER,
-  REMOVE_ROLE_FILTER,
   APPLY_FILTERS,
 }

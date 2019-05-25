@@ -21,8 +21,6 @@ import { store } from '../../redux/store'
 import {
   fetchFromDissidiadb,
   saveOwnedGear,
-  addRoleFilter,
-  removeRoleFilter,
   applyFilters,
 } from '../../redux/actions'
 import { INSIGHTS } from '../../react-router/routes'
@@ -36,6 +34,7 @@ class GearList extends PureComponent {
     this.state = {
       filterOpen: false,
       nameFilter: null,
+      roleFilter: [],
       pagerItemsToShow: 6,
     }
   }
@@ -164,6 +163,7 @@ class GearList extends PureComponent {
   closeFilterModal = () => {
     const {
       nameFilter,
+      roleFilter,
     } = this.state
     this.setState(
       {
@@ -172,35 +172,50 @@ class GearList extends PureComponent {
       },
       () => store.dispatch(applyFilters({
         characterNameFilter: nameFilter,
+        roleFilter,
       })),
     )
   }
 
   addRoleFilter = (role) => {
     const {
-      filters,
-    } = this.props
-    if (R.contains(role, filters.role)) {
-      store.dispatch(removeRoleFilter(role))
+      roleFilter,
+    } = this.state
+    if (R.contains(role, roleFilter)) {
+      this.setState(prevState => ({
+        roleFilter: R.filter(
+          R.complement(R.equals(role)),
+          prevState.roleFilter,
+        ),
+      }))
     } else {
-      store.dispatch(addRoleFilter(role))
+      this.setState(prevState => ({
+        roleFilter: [
+          ...prevState.roleFilter,
+          role,
+        ],
+      }))
     }
   }
 
   renderModal = () => {
     const {
       filterOpen,
+      roleFilter,
+      nameFilter,
     } = this.state
     const {
       characterRoles,
-      filters,
     } = this.props
 
     return (
       <ModalFilter
         filterOpen={filterOpen}
         characterRoles={characterRoles}
-        filters={filters}
+        filters={{
+          role: roleFilter,
+          characterNameFilter: nameFilter,
+        }}
         onApply={this.closeFilterModal}
         onClose={this.handleCloseFilter}
         onPressRole={this.addRoleFilter}
