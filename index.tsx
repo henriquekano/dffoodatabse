@@ -1,18 +1,19 @@
 import * as React from 'react'
-import { AppRegistry, ActivityIndicator, View } from 'react-native'
+import { AppRegistry, StatusBar } from 'react-native'
 import { Provider } from 'react-redux'
 import { NativeRouter } from 'react-router-native'
 import { PersistGate } from 'redux-persist/integration/react'
 import { store, persistor } from './src/redux/store'
 import Router from './src/react-router/router'
 import StorybookUIRoot from './storybook'
-import App from './App'
 import { name as appName } from './app.json'
 import { CacheRetrieve, GearList } from './src/screens'
 
 const {
   process,
 } = global
+
+// StatusBar.setHidden(true, null)
 
 // Apply here all the global shit
 const Application = () => (

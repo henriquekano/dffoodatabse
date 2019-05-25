@@ -3,11 +3,15 @@ import {
   View,
   ActivityIndicator,
   Keyboard,
+  ScrollView,
 } from 'react-native'
 import {
   Text,
   SearchBar,
 } from 'react-native-elements'
+import {
+  Chip,
+} from 'react-native-paper'
 import { connect } from 'react-redux'
 import R from 'ramda'
 import {
@@ -106,6 +110,40 @@ class GearList extends PureComponent {
     </View>
   )
 
+  renderFilters = () => {
+    const {
+      nameFilter,
+      roleFilter,
+    } = this.state
+
+    return (
+      <View>
+        <ScrollView horizontal>
+          {
+            nameFilter
+              ? (
+                <Chip mode="outlined" style={{ margin: 5 }}>
+                  { `"${nameFilter}"` }
+                </Chip>
+              )
+              : null
+          }
+          {
+            roleFilter && roleFilter.length > 0
+              ? (
+                roleFilter.map(role => (
+                  <Chip mode="outlined" style={{ margin: 5 }} key={role}>
+                    { role }
+                  </Chip>
+                ))
+              )
+              : null
+          }
+        </ScrollView>
+      </View>
+    )
+  }
+
   renderItem = ({ data, key }) => {
     const { savedGears } = this.props
 
@@ -131,8 +169,15 @@ class GearList extends PureComponent {
   }
 
   renderGears = () => {
-    const { pagerItemsToShow } = this.state
+    const {
+      pagerItemsToShow,
+      nameFilter,
+      roleFilter,
+    } = this.state
     const { filteredGears: gears } = this.props
+
+    const hasFilter = nameFilter || roleFilter && roleFilter.length > 0
+
     const formatToFlatListData = R.map(
       R.applySpec({
         data: R.identity,
@@ -146,6 +191,11 @@ class GearList extends PureComponent {
 
     return (
       <View style={{ flex: 1 }}>
+        {
+          hasFilter
+            ? this.renderFilters()
+            : null
+        }
         <SnappyScrollView
           data={formattedGears}
           itemsPerPage={pagerItemsToShow}
@@ -168,7 +218,6 @@ class GearList extends PureComponent {
     this.setState(
       {
         filterOpen: false,
-        nameFilter: null,
       },
       () => store.dispatch(applyFilters({
         characterNameFilter: nameFilter,
@@ -231,6 +280,7 @@ class GearList extends PureComponent {
       filteredGears: gears,
       history,
     } = this.props
+
     const gearsLoaded = gears && gears.length > 0
     return (
       <View style={{ flex: 1 }}>
