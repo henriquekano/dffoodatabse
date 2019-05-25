@@ -17,12 +17,15 @@ class SnappyScrollView extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { data: currentData } = this.props
-    const { data, itemsPerPage } = nextProps
-    const dataChanged = currentData && data && currentData.length !== data.length
+    const { data: currentData, itemsPerPage } = this.props
+    const { data, itemsPerPage: nextItemsPerPage } = nextProps
+    const dataChanged = currentData
+      && data
+      && currentData.length !== data.length
+      || itemsPerPage !== nextItemsPerPage
 
     if (dataChanged) {
-      this.paginatedData = R.splitEvery(itemsPerPage)(data)
+      this.paginatedData = R.splitEvery(nextItemsPerPage)(data)
       this.setState({
         pagesData: this.nullNonVisible(0),
         currentPage: 0,

@@ -2,9 +2,11 @@ import React, { PureComponent } from 'react'
 import {
   View,
   ActivityIndicator,
+  Keyboard,
 } from 'react-native'
 import {
   Text,
+  SearchBar,
 } from 'react-native-elements'
 import { connect } from 'react-redux'
 import R from 'ramda'
@@ -34,11 +36,19 @@ class GearList extends PureComponent {
     this.state = {
       filterOpen: false,
       nameFilter: null,
+      pagerItemsToShow: 6,
     }
   }
 
   componentDidMount = () => {
     store.dispatch(fetchFromDissidiadb())
+    this.keyboardShowListener = Keyboard.addListener('keyboardDidShow', () => this.setState({ pagerItemsToShow: 2 }))
+    this.keyboardHideListener = Keyboard.addListener('keyboardDidHide', () => this.setState({ pagerItemsToShow: 6 }))
+  }
+
+  componentWillUnmount = () => {
+    this.keyboardHideListener.remove()
+    this.keyboardShowListener.remove()
   }
 
   handleSaveGear = ({ gear, limitBreakLevel }) => {
@@ -122,6 +132,7 @@ class GearList extends PureComponent {
   }
 
   renderGears = () => {
+    const { pagerItemsToShow } = this.state
     const { filteredGears: gears } = this.props
     const formatToFlatListData = R.map(
       R.applySpec({
@@ -135,11 +146,18 @@ class GearList extends PureComponent {
     )(gears)
 
     return (
-      <SnappyScrollView
-        data={formattedGears}
-        itemsPerPage={6}
-        renderItem={this.renderItem}
-      />
+      <View style={{ flex: 1 }}>
+        <SnappyScrollView
+          data={formattedGears}
+          itemsPerPage={pagerItemsToShow}
+          renderItem={this.renderItem}
+        />
+        <SearchBar
+          placeholder="Gear name"
+          // containerStyle={{ backgroundColor: '#3D6DCC' }}
+          // inputContainerStyle={{ backgroundColor: '#84a3e0' }}
+        />
+      </View>
     )
   }
 
