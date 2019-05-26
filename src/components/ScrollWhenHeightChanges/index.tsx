@@ -1,15 +1,21 @@
 import React, { PureComponent } from 'react'
 import { ScrollView, ScrollViewProps, LayoutChangeEvent } from 'react-native'
 
-class ScrollWhenHeightChanges extends PureComponent<ScrollViewProps> {
+export interface ScrollWhenHeightChangesProps extends ScrollViewProps {
+  threshold?: number,
+}
+
+class ScrollWhenHeightChanges extends PureComponent<ScrollWhenHeightChangesProps> {
   state = {
     height: null,
   }
 
   saveInitialHeight = (e: LayoutChangeEvent) => {
     const newHeight = e.nativeEvent.layout.height
-    console.log(newHeight)
     const { height } = this.state
+    const { threshold = 1 } = this.props
+
+    // const newHeightLessThanThreshold = height && newHeight <= height * threshold
 
     if (!height) {
       this.setState({

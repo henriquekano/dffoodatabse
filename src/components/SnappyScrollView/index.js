@@ -5,15 +5,11 @@ import { Text } from 'react-native-elements'
 import R from 'ramda'
 import PropTypes from 'prop-types'
 
-const styles = {
-
-}
-
 class SnappyScrollView extends PureComponent {
   constructor(props) {
     super(props)
     this.paginatedData = this.splitPageData()
-    this.renderedCells = 3
+    this.renderedCells = 5
     this.state = {
       pagesData: this.nullNonVisible(0),
       currentPage: 0,

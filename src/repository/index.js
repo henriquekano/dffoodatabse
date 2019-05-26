@@ -3,14 +3,15 @@ import R from 'ramda'
 const filterGears = (state) => {
   const {
     characters,
-    filters: { role: roleFilters, characterNameFilter },
+    filters: { role: roleFilters, characterNameFilter, gearName },
     gears,
   } = state
-  console.log(state)
 
+  const hasGearNameFilter = !!gearName
   const hasRoleFilter = roleFilters && roleFilters.length > 0
-  const hasCharacterNameFilter = characterNameFilter
-  if (!hasRoleFilter && !hasCharacterNameFilter) {
+  const hasCharacterNameFilter = !!characterNameFilter
+
+  if (!hasRoleFilter && !hasCharacterNameFilter && !hasGearNameFilter) {
     return gears
   }
 
@@ -60,6 +61,21 @@ const filterGears = (state) => {
         R.replace(/\W/g, ''),
         minimizeString,
         R.includes(minimizeString(characterNameFilter)),
+      ),
+    )(filteredGears)
+  }
+
+  if (hasGearNameFilter) {
+    const minimizeString = R.pipe(
+      R.replace(/\W/g, ''),
+      R.toLower,
+    )
+    filteredGears = R.filter(
+      R.pipe(
+        R.pathOr('', ['name', 'en']),
+        R.replace(/\W/g, ''),
+        minimizeString,
+        R.includes(minimizeString(gearName)),
       ),
     )(filteredGears)
   }

@@ -22,10 +22,6 @@ const initialState: StateProps = {
   characters: undefined,
   savedGears: [],
   filteredGears: [],
-  filters: {
-    role: [],
-    characterNameFilter: undefined,
-  },
   fetchError: null,
   fetchingGears: false,
   characterRoles: [],
@@ -42,6 +38,7 @@ const reducer = (state: StateProps = initialState, action: Action) => {
         filters: {
           role: (action as ApplyFiltersAction).roleFilter,
           characterNameFilter: (action as ApplyFiltersAction).characterNameFilter,
+          gearName: (action as ApplyFiltersAction).gearNameFilter,
         }
       }),
     }
@@ -61,7 +58,10 @@ const reducer = (state: StateProps = initialState, action: Action) => {
     const gearsDidntChange = (state.gears && state.gears.length)
       === (gears && gears.length)
     if (gearsDidntChange) {
-      return state
+      return {
+        ...state,
+        fetchingGears: false,
+      }
     }
     return {
       ...state,

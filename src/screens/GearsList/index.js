@@ -3,10 +3,10 @@ import {
   View,
   ActivityIndicator,
   ScrollView,
-  KeyboardAvoidingView,
 } from 'react-native'
 import {
   Text,
+  Icon,
 } from 'react-native-elements'
 import {
   Chip,
@@ -14,6 +14,7 @@ import {
 } from 'react-native-paper'
 import { connect } from 'react-redux'
 import R from 'ramda'
+import _ from 'lodash'
 import {
   GearView,
   NetworkStatus,
@@ -22,13 +23,14 @@ import {
   Header,
   ScrollWhenHeightChanges,
 } from '../../components'
-import { store } from '../../redux/store'
+import { store } from '../../redux/store.ts'
 import {
   fetchFromDissidiadb,
   saveOwnedGear,
   applyFilters,
-} from '../../redux/actions'
+} from '../../redux/actions.ts'
 import { INSIGHTS } from '../../react-router/routes'
+import { GearsListPresentational } from '../../presentational'
 
 class GearList extends PureComponent {
   constructor(props) {
@@ -71,6 +73,28 @@ class GearList extends PureComponent {
     this.setState({
       filterOpen: false,
     })
+  }
+
+  handleChartPress = () => {
+    const { history } = this.props
+    history.push(INSIGHTS)
+  }
+
+  handleSearchBarType = (text) => {
+    const {
+      nameFilter,
+      roleFilter,
+    } = this.state
+    this.setState(
+      {
+
+      },
+      () => store.dispatch(applyFilters({
+        characterNameFilter: nameFilter,
+        roleFilter,
+        gearNameFilter: text,
+      })),
+    )
   }
 
   renderLoading = () => (
@@ -185,21 +209,18 @@ class GearList extends PureComponent {
 
     return (
       <View style={{ flex: 1 }}>
-        {
-          hasFilter
-            ? this.renderFilters()
-            : null
-        }
-        <ScrollWhenHeightChanges contentContainerStyle={{ flex: 1 }}>
+        <ScrollWhenHeightChanges threshold={0.4} contentContainerStyle={{ flex: 1 }}>
+          {
+            hasFilter
+              ? this.renderFilters()
+              : null
+          }
           <SnappyScrollView
             data={formattedGears}
             itemsPerPage={pagerItemsToShow}
             renderItem={this.renderItem}
           />
         </ScrollWhenHeightChanges>
-        <Searchbar
-          placeholder="Gear name"
-        />
       </View>
     )
   }
@@ -267,39 +288,101 @@ class GearList extends PureComponent {
     )
   }
 
+  renderNoResults = () => (
+    <View
+      style={{
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Icon name="whatever" />
+      <Text>Found a whooping 0 results</Text>
+    </View>
+  )
+
   render = () => {
     const {
       fetchingGears,
       fetchingError,
-      filteredGears: gears,
+      gears,
+      filteredGears,
+      characterRoles,
       history,
+      savedGears,
     } = this.props
+    const {
+      filterOpen,
+      nameFilter,
+      pagerItemsToShow,
+      roleFilter,
+    } = this.state
 
     const gearsLoaded = gears && gears.length > 0
+    const hasResults = filteredGears && filteredGears.length > 0
+
     return (
-      <View style={{ flex: 1 }}>
-        <Header
-          onFilterPress={this.handleOpenFilter}
-          onChartPress={() => history.push(INSIGHTS)}
-        />
-        <NetworkStatus />
-        {
-          fetchingError && !gearsLoaded
-            ? this.renderError(fetchingError)
-            : null
-        }
-        {
-          fetchingGears && !gearsLoaded
-            ? this.renderLoading()
-            : null
-        }
-        {
-          gearsLoaded
-            ? this.renderGears()
-            : null
-        }
-        { this.renderModal() }
-      </View>
+      // <View style={{ flex: 1 }}>
+      //   <Header
+      //     onFilterPress={this.handleOpenFilter}
+      //     onChartPress={() => history.push(INSIGHTS)}
+      //   />
+      //   <NetworkStatus />
+      //   {
+      //     fetchingError && !gearsLoaded
+      //       ? this.renderError(fetchingError)
+      //       : null
+      //   }
+      //   {
+      //     fetchingGears && !gearsLoaded
+      //       ? this.renderLoading()
+      //       : null
+      //   }
+      //   {
+      //     gearsLoaded && hasResults
+      //       ? this.renderGears()
+      //       : null
+      //   }
+      //   {
+      //     !hasResults
+      //       ? this.renderNoResults()
+      //       : null
+      //   }
+      //   {
+      //     gearsLoaded
+      //       ? (
+      //         <Searchbar
+      //           onChangeText={_.debounce(this.handleSearchBarType, 500)}
+      //           placeholder="Gear name"
+      //         />
+      //       )
+      //       : null
+      //   }
+      //   { this.renderModal() }
+      // </View>
+      <GearsListPresentational
+        fetchingGears={fetchingGears}
+        fetchError={fetchingError}
+        gears={gears}
+        filteredGears={filteredGears}
+        onFilterPress={this.handleOpenFilter}
+        handleSearchBarType={_.debounce(this.handleSearchBarType, 500)}
+        onChartPress={this.handleChartPress}
+        roleFilter={roleFilter}
+        nameFilter={nameFilter}
+        // modal props
+        filterOpen={filterOpen}
+        characterRoles={characterRoles}
+        onApply={this.closeFilterModal}
+        onClose={this.handleCloseFilter}
+        onPressRole={this.addRoleFilter}
+        onTypeCharacterName={this.handleNameFilterType}
+        // gear list
+        pagerItemsToShow={pagerItemsToShow}
+        onSaveGear={this.handleSaveGear}
+        savedGears={savedGears}
+      />
     )
   }
 }

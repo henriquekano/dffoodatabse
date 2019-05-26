@@ -28,6 +28,7 @@ export interface RoleAction extends BaseAction {
 export interface ApplyFiltersAction extends BaseAction {
   characterNameFilter: string,
   roleFilter: string[],
+  gearNameFilter: string,
 }
 
 export interface FetchAction extends BaseAction {
@@ -45,12 +46,18 @@ export interface SaveGearAction extends BaseAction {
 
 export type Action = BaseAction | RoleAction | FetchAction | ErrorAction | SaveGearAction
 
+export interface ApplyFilterArgs {
+  characterNameFilter: string,
+  roleFilter: string[],
+  gearNameFilter: string,
+}
 const applyFilters = (
-  { characterNameFilter, roleFilter }: { characterNameFilter: string, roleFilter: string[] }
+  { characterNameFilter, roleFilter, gearNameFilter }: ApplyFilterArgs
 ): ApplyFiltersAction => ({
   type: APPLY_FILTERS,
   characterNameFilter,
   roleFilter,
+  gearNameFilter,
 })
 
 const getGameInformation = (): BaseAction => ({

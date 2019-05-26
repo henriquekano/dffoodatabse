@@ -1,5 +1,6 @@
 import StateProps from '../redux/stateTypes'
 import { SavedGear, Character, Gear } from '../../types/common'
+import { ApplyFilterArgs } from '../redux/actions'
 
 export interface Props {
   characters: Character[],
@@ -18,5 +19,5 @@ export interface HorizontalBarGraphData {
   data: number[],
 }
 
-declare function filterGears(state: StateProps): Gear[]
+declare function filterGears(state: ApplyFilterArgs): Gear[]
 declare function calculateGearDistribuitionByRole(state: Props): HorizontalBarGraphData

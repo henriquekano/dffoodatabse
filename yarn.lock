@@ -1505,6 +1505,11 @@
   dependencies:
     "@types/jest-diff" "*"
 
+"@types/lodash@^4.14.132":
+  version "4.14.132"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.132.tgz#8ce45ca8745ff2e004fac0de0ab46f61e390ffa0"
+  integrity sha512-RNUU1rrh85NgUJcjOOr96YXr+RHwInGbaQCZmlitqOaCKXffj8bh+Zxwuq5rjDy5OgzFldDVoqk4pyLEDiwxIw==
+
 "@types/prop-types@*":
   version "15.7.1"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.1.tgz#f1a11e7babb0c3cad68100be381d1e064c68f1f6"
@@ -1514,6 +1519,13 @@
   version "0.26.8"
   resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.8.tgz#e002612cca52e52f9176d577f4d6229c8c72a10a"
   integrity sha512-PSMkNNhB900U2xcyndlkVjJeCXpVtf1yod0Kdq/ArsLDIE0tW8pLBChmQeJs4o4dfp3AEP+AGm6zIseZPU4ndA==
+
+"@types/react-native-elements@^0.18.0":
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/@types/react-native-elements/-/react-native-elements-0.18.0.tgz#81cf92d75a5d9ed73599761da37bd2b05b107a91"
+  integrity sha512-Tt0aq6HlN31Wexica9MwTwxnt46fLyx6yzMFJWPx2hqACrvBZfFTlwCoWMRa6ArR/kX3XJbAe6vKEBuZ08Zvtw==
+  dependencies:
+    react-native-elements "*"
 
 "@types/react-native-svg-charts@^5.0.1":
   version "5.0.1"
@@ -9162,7 +9174,7 @@ react-native-chart-kit@^2.6.1:
     paths-js "^0.4.7"
     point-in-polygon "^1.0.1"
 
-react-native-elements@~1.1.0:
+react-native-elements@*, react-native-elements@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/react-native-elements/-/react-native-elements-1.1.0.tgz#f99bcda4459a886f3ab4591c684c099d37aedf2b"
   integrity sha512-n1eOL0kUdlH01zX7bn1p7qhYXn7kquqxYQ0oWlxoAck9t5Db/KeK5ViOsAk8seYSvAG6Pe7OxgzRFnMfFhng0Q==
