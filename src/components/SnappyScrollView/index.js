@@ -5,11 +5,15 @@ import { Text } from 'react-native-elements'
 import R from 'ramda'
 import PropTypes from 'prop-types'
 
+const styles = {
+
+}
+
 class SnappyScrollView extends PureComponent {
   constructor(props) {
     super(props)
     this.paginatedData = this.splitPageData()
-    this.renderedCells = 7
+    this.renderedCells = 3
     this.state = {
       pagesData: this.nullNonVisible(0),
       currentPage: 0,
@@ -34,33 +38,19 @@ class SnappyScrollView extends PureComponent {
   }
 
   nullNonVisible = (page) => {
-    // quantas celulas devem ter dados reais pra direita / esquerda
     const renderLength = Math.floor(this.renderedCells / 2)
-    let arrayBegin = page - renderLength
-    if (arrayBegin < 0) {
-      arrayBegin = 0
-    }
-    const visible = R.slice(arrayBegin, page + renderLength + 1, this.paginatedData)
+    const calculated = this.paginatedData.map((value, index) => {
+      if (index <= page - renderLength - 1) {
+        return null
+      }
 
-    let numberOfElementsBefore = 0
-    const distanceToLeftBorder = page
-    if (page >= renderLength + 1) {
-      numberOfElementsBefore = page - renderLength
-    }
-    const before = R.repeat(null, numberOfElementsBefore)
+      if (index >= page + renderLength + 1) {
+        return null
+      }
 
-    let numberOfElementsAfter = this.paginatedData.length - (renderLength * 2 + 1) - numberOfElementsBefore
-    const distanceToRightBorder = this.paginatedData.length - (page + 1)
-    const pageTooCloseToRightBorder = distanceToRightBorder <= renderLength
-    const visibleGroupTouchesLeftBorder = distanceToLeftBorder < renderLength
-    if (pageTooCloseToRightBorder) {
-      numberOfElementsAfter = 0
-    } else if (visibleGroupTouchesLeftBorder) {
-      numberOfElementsAfter += renderLength - page
-    }
-    const after = R.repeat(null, numberOfElementsAfter)
-
-    return [...before, ...visible, ...after]
+      return value
+    })
+    return calculated
   }
 
   splitPageData = () => {
@@ -118,7 +108,7 @@ class SnappyScrollView extends PureComponent {
       <View style={{ flex: 1 }}>
         <ViewPager
           ref={(pagerRef) => { this.pagerRef = pagerRef }}
-          style={{ flex: 20 }}
+          style={{ flex: 1 }}
           initialPage={0}
           onPageSelected={this.calculateNewPages}
         >
@@ -126,8 +116,8 @@ class SnappyScrollView extends PureComponent {
             pagesData.map(this.renderPage)
           }
         </ViewPager>
-        <View style={{ flex: 1 }}>
-          <Text style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', fontWeight: 'bold' }}>
+        <View>
+          <Text style={{ flexDirection: 'row', alignSelf: 'center', fontWeight: 'bold' }}>
             {`<${currentPage + 1} / ${pagesData.length}>`}
           </Text>
         </View>

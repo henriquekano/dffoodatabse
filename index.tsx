@@ -2,6 +2,7 @@ import * as React from 'react'
 import { AppRegistry, StatusBar } from 'react-native'
 import { Provider } from 'react-redux'
 import { NativeRouter } from 'react-router-native'
+import { Provider as PaperProvider } from 'react-native-paper'
 import { PersistGate } from 'redux-persist/integration/react'
 import { store, persistor } from './src/redux/store'
 import Router from './src/react-router/router'
@@ -22,7 +23,9 @@ const Application = () => (
       loading={(<CacheRetrieve />)}
       persistor={persistor}
     >
-      <Router />
+      <PaperProvider>
+        <Router />
+      </PaperProvider>
     </PersistGate>
   </Provider>
 )

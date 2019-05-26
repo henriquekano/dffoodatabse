@@ -3,15 +3,15 @@ import {
   TouchableOpacity,
   View,
   Modal,
-  NativeSyntheticEvent,
-  TextInputEndEditingEventData,
 } from 'react-native'
 import {
   Icon,
   Text,
   Input,
-  Button,
 } from 'react-native-elements'
+import {
+  Button,
+} from 'react-native-paper'
 import R from 'ramda'
 
 export interface Filter {
@@ -85,16 +85,15 @@ const ModalFilter = (props: Props) => {
             ))
           }
         </View>
-        <Button
-          title="APPLY"
-          containerStyle={{
-            padding: 10
-          }}
-          buttonStyle={{
-            backgroundColor: '#3D6DCC'
-          }}
-          onPress={onApply}
-        />
+        <View style={{ padding: 10 }}>
+          <Button
+            mode="contained"
+            color="#3D6DCC"
+            onPress={onApply}
+          >
+            APPLY
+          </Button>
+        </View>
       </View>
     </Modal>
   )

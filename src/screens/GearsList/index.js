@@ -2,15 +2,15 @@ import React, { PureComponent } from 'react'
 import {
   View,
   ActivityIndicator,
-  Keyboard,
   ScrollView,
+  KeyboardAvoidingView,
 } from 'react-native'
 import {
   Text,
-  SearchBar,
 } from 'react-native-elements'
 import {
   Chip,
+  Searchbar,
 } from 'react-native-paper'
 import { connect } from 'react-redux'
 import R from 'ramda'
@@ -20,6 +20,7 @@ import {
   SnappyScrollView,
   ModalFilter,
   Header,
+  ScrollWhenHeightChanges,
 } from '../../components'
 import { store } from '../../redux/store'
 import {
@@ -45,13 +46,6 @@ class GearList extends PureComponent {
 
   componentDidMount = () => {
     store.dispatch(fetchFromDissidiadb())
-    this.keyboardShowListener = Keyboard.addListener('keyboardDidShow', () => this.setState({ pagerItemsToShow: 2 }))
-    this.keyboardHideListener = Keyboard.addListener('keyboardDidHide', () => this.setState({ pagerItemsToShow: 6 }))
-  }
-
-  componentWillUnmount = () => {
-    this.keyboardHideListener.remove()
-    this.keyboardShowListener.remove()
   }
 
   handleSaveGear = ({ gear, limitBreakLevel }) => {
@@ -196,15 +190,15 @@ class GearList extends PureComponent {
             ? this.renderFilters()
             : null
         }
-        <SnappyScrollView
-          data={formattedGears}
-          itemsPerPage={pagerItemsToShow}
-          renderItem={this.renderItem}
-        />
-        <SearchBar
+        <ScrollWhenHeightChanges contentContainerStyle={{ flex: 1 }}>
+          <SnappyScrollView
+            data={formattedGears}
+            itemsPerPage={pagerItemsToShow}
+            renderItem={this.renderItem}
+          />
+        </ScrollWhenHeightChanges>
+        <Searchbar
           placeholder="Gear name"
-          // containerStyle={{ backgroundColor: '#3D6DCC' }}
-          // inputContainerStyle={{ backgroundColor: '#84a3e0' }}
         />
       </View>
     )
