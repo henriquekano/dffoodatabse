@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, ActivityIndicator, ScrollView } from 'react-native'
+import { View, ActivityIndicator, ScrollView, KeyboardAvoidingView } from 'react-native'
 import { Text, Icon } from 'react-native-elements'
 import { Chip, Searchbar } from 'react-native-paper'
 import * as _ from 'lodash'
@@ -108,7 +108,6 @@ interface RenderGearViewProps {
 }
 
 const RenderGearView = ({ data: { data }, savedGears, onSaveGear }: RenderGearViewProps) => {
-  console.log(data, savedGears, onSaveGear)
   const thisGearIcon = data.icon
   const thisGearSavedLimitBreakLevel = R.pipe(
     R.filter(
@@ -159,6 +158,8 @@ const GearListState = ({
     formatToFlatListData,
   )(gears)
 
+  const hasResults = gears && gears.length > 0
+
   return (
     <View style={{ flex: 1 }}>
       <ScrollWhenHeightChanges threshold={0.4} contentContainerStyle={{ flex: 1 }}>
@@ -172,18 +173,26 @@ const GearListState = ({
             )
             : null
         }
-        <SnappyScrollView
-          data={formattedGears}
-          itemsPerPage={pagerItemsToShow}
-          renderItem={(data) => (
-            <RenderGearView
-              key={`${data.key}+${data.data.character.name}`}
-              data={data}
-              onSaveGear={onSaveGear}
-              savedGears={savedGears}
-            />
-          )}
-        />
+        {
+          hasResults
+            ? (
+              <SnappyScrollView
+                data={formattedGears}
+                itemsPerPage={pagerItemsToShow}
+                renderItem={(data) => (
+                  <RenderGearView
+                    key={`${data.key}+${data.data.character.name}`}
+                    data={data}
+                    onSaveGear={onSaveGear}
+                    savedGears={savedGears}
+                  />
+                )}
+              />
+            )
+            : (
+              <NoResultState />
+            )
+        }
       </ScrollWhenHeightChanges>
     </View>
   )
@@ -228,6 +237,7 @@ export interface GearsListPresentationalProps extends StateProps, RenderModalPro
   onFilterPress: () => void,
   handleSearchBarType: (text: string) => void,
   onChartPress: () => void,
+  onCharacterPress: () => void,
 }
 
 const GearsListPresentational = ({
@@ -238,6 +248,7 @@ const GearsListPresentational = ({
   onFilterPress,
   handleSearchBarType,
   onChartPress,
+  onCharacterPress,
   roleFilter,
   nameFilter,
   savedGears,
@@ -261,6 +272,7 @@ const GearsListPresentational = ({
       <Header
         onFilterPress={onFilterPress}
         onChartPress={onChartPress}
+        onCharacterPress={onCharacterPress}
       />
       <NetworkStatus />
       {
@@ -274,7 +286,7 @@ const GearsListPresentational = ({
           : null
       }
       {
-        gearsLoaded && hasResults
+        gearsLoaded
           ? (
             <GearListState
               filteredGears={filteredGears}
@@ -285,11 +297,6 @@ const GearsListPresentational = ({
               savedGears={savedGears}
             />
           )
-          : null
-      }
-      {
-        !hasResults
-          ? <NoResultState />
           : null
       }
       {

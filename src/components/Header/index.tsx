@@ -11,6 +11,7 @@ const Header = (props: Props): React.ReactNode => {
   const {
     onFilterPress,
     onChartPress,
+    onCharacterPress,
     ...restOfProps
   } = props
   return (
@@ -22,6 +23,13 @@ const Header = (props: Props): React.ReactNode => {
       }}
       rightComponent={(
         <View style={{ flexDirection: 'row' }}>
+          <TouchableOpacity style={{ backgroundColor: 'orange', paddingVertical: 10, paddingHorizontal: 10 }} onPress={onCharacterPress}>
+            <Icon
+              type="material-community"
+              name="alien"
+              color="white"
+            />
+          </TouchableOpacity>
           <TouchableOpacity style={{ backgroundColor: 'orange', paddingVertical: 10, paddingHorizontal: 10 }} onPress={props.onChartPress}>
             <Icon
               type="material-community"

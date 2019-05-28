@@ -123,7 +123,14 @@ const _getCharacters = (jsFile) => {
   let t = {}
   charactersFunc(e, t)
 
-  return normalizeCharactersData(e.exports)
+  return normalizeCharactersData(e.exports).map((character) => {
+    const charIcon = _getCharacterIcon(evaled, character.slug)
+
+    return {
+      ...character,
+      icon: charIcon,
+    }
+  })
 }
 
 const _getGears = (jsFile) => {

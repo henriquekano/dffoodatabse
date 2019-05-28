@@ -1,35 +1,14 @@
 import React, { PureComponent } from 'react'
-import {
-  View,
-  ActivityIndicator,
-  ScrollView,
-} from 'react-native'
-import {
-  Text,
-  Icon,
-} from 'react-native-elements'
-import {
-  Chip,
-  Searchbar,
-} from 'react-native-paper'
 import { connect } from 'react-redux'
 import R from 'ramda'
 import _ from 'lodash'
-import {
-  GearView,
-  NetworkStatus,
-  SnappyScrollView,
-  ModalFilter,
-  Header,
-  ScrollWhenHeightChanges,
-} from '../../components'
 import { store } from '../../redux/store.ts'
 import {
   fetchFromDissidiadb,
   saveOwnedGear,
   applyFilters,
 } from '../../redux/actions.ts'
-import { INSIGHTS } from '../../react-router/routes'
+import { INSIGHTS, CHARACTERS } from '../../react-router/routes'
 import { GearsListPresentational } from '../../presentational'
 
 class GearList extends PureComponent {
@@ -80,6 +59,11 @@ class GearList extends PureComponent {
     history.push(INSIGHTS)
   }
 
+  handleCharacterPress = () => {
+    const { history } = this.props
+    history.push(CHARACTERS)
+  }
+
   handleSearchBarType = (text) => {
     const {
       nameFilter,
@@ -94,134 +78,6 @@ class GearList extends PureComponent {
         roleFilter,
         gearNameFilter: text,
       })),
-    )
-  }
-
-  renderLoading = () => (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <ActivityIndicator size="large" />
-    </View>
-  )
-
-  renderError = err => (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Text h4>
-        Something went wrong. Sorry :C
-      </Text>
-      <Text h4>
-        {String(err)}
-      </Text>
-    </View>
-  )
-
-  renderFilters = () => {
-    const {
-      nameFilter,
-      roleFilter,
-    } = this.state
-
-    return (
-      <View>
-        <ScrollView horizontal>
-          {
-            nameFilter
-              ? (
-                <Chip mode="outlined" style={{ margin: 5 }}>
-                  { `"${nameFilter}"` }
-                </Chip>
-              )
-              : null
-          }
-          {
-            roleFilter && roleFilter.length > 0
-              ? (
-                roleFilter.map(role => (
-                  <Chip mode="outlined" style={{ margin: 5 }} key={role}>
-                    { role }
-                  </Chip>
-                ))
-              )
-              : null
-          }
-        </ScrollView>
-      </View>
-    )
-  }
-
-  renderItem = ({ data, key }) => {
-    const { savedGears } = this.props
-
-    const thisGearIcon = data.icon
-    const thisGearSavedLimitBreakLevel = R.pipe(
-      R.filter(
-        R.pathEq(['gear', 'icon'], thisGearIcon),
-      ),
-      R.head,
-      R.propOr(-1, 'limitBreakLevel'),
-    )(savedGears)
-    return (
-      <View
-        key={`${key}+${data.character.name}`}
-        style={{ backgroundColor: 'white', borderRadius: 10, borderColor: 'lightgrey', borderWidth: 1, flex: 1, padding: 10, margin: 5, width: '50%' }}>
-        <GearView
-          gear={data}
-          limitBreakLevel={thisGearSavedLimitBreakLevel}
-          onPressLimitBreak={this.handleSaveGear}
-        />
-      </View>
-    )
-  }
-
-  renderGears = () => {
-    const {
-      pagerItemsToShow,
-      nameFilter,
-      roleFilter,
-    } = this.state
-    const { filteredGears: gears } = this.props
-
-    const hasFilter = nameFilter || roleFilter && roleFilter.length > 0
-
-    const formatToFlatListData = R.map(
-      R.applySpec({
-        data: R.identity,
-        key: R.path(['name', 'en']),
-      }),
-    )
-
-    const formattedGears = R.pipe(
-      formatToFlatListData,
-    )(gears)
-
-    return (
-      <View style={{ flex: 1 }}>
-        <ScrollWhenHeightChanges threshold={0.4} contentContainerStyle={{ flex: 1 }}>
-          {
-            hasFilter
-              ? this.renderFilters()
-              : null
-          }
-          <SnappyScrollView
-            data={formattedGears}
-            itemsPerPage={pagerItemsToShow}
-            renderItem={this.renderItem}
-          />
-        </ScrollWhenHeightChanges>
-      </View>
     )
   }
 
@@ -262,46 +118,6 @@ class GearList extends PureComponent {
     }
   }
 
-  renderModal = () => {
-    const {
-      filterOpen,
-      roleFilter,
-      nameFilter,
-    } = this.state
-    const {
-      characterRoles,
-    } = this.props
-
-    return (
-      <ModalFilter
-        filterOpen={filterOpen}
-        characterRoles={characterRoles}
-        filters={{
-          role: roleFilter,
-          characterNameFilter: nameFilter,
-        }}
-        onApply={this.closeFilterModal}
-        onClose={this.handleCloseFilter}
-        onPressRole={this.addRoleFilter}
-        onTypeCharacterName={this.handleNameFilterType}
-      />
-    )
-  }
-
-  renderNoResults = () => (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Icon name="whatever" />
-      <Text>Found a whooping 0 results</Text>
-    </View>
-  )
-
   render = () => {
     const {
       fetchingGears,
@@ -309,7 +125,6 @@ class GearList extends PureComponent {
       gears,
       filteredGears,
       characterRoles,
-      history,
       savedGears,
     } = this.props
     const {
@@ -319,48 +134,7 @@ class GearList extends PureComponent {
       roleFilter,
     } = this.state
 
-    const gearsLoaded = gears && gears.length > 0
-    const hasResults = filteredGears && filteredGears.length > 0
-
     return (
-      // <View style={{ flex: 1 }}>
-      //   <Header
-      //     onFilterPress={this.handleOpenFilter}
-      //     onChartPress={() => history.push(INSIGHTS)}
-      //   />
-      //   <NetworkStatus />
-      //   {
-      //     fetchingError && !gearsLoaded
-      //       ? this.renderError(fetchingError)
-      //       : null
-      //   }
-      //   {
-      //     fetchingGears && !gearsLoaded
-      //       ? this.renderLoading()
-      //       : null
-      //   }
-      //   {
-      //     gearsLoaded && hasResults
-      //       ? this.renderGears()
-      //       : null
-      //   }
-      //   {
-      //     !hasResults
-      //       ? this.renderNoResults()
-      //       : null
-      //   }
-      //   {
-      //     gearsLoaded
-      //       ? (
-      //         <Searchbar
-      //           onChangeText={_.debounce(this.handleSearchBarType, 500)}
-      //           placeholder="Gear name"
-      //         />
-      //       )
-      //       : null
-      //   }
-      //   { this.renderModal() }
-      // </View>
       <GearsListPresentational
         fetchingGears={fetchingGears}
         fetchError={fetchingError}
@@ -369,6 +143,7 @@ class GearList extends PureComponent {
         onFilterPress={this.handleOpenFilter}
         handleSearchBarType={_.debounce(this.handleSearchBarType, 500)}
         onChartPress={this.handleChartPress}
+        onCharacterPress={this.handleCharacterPress}
         roleFilter={roleFilter}
         nameFilter={nameFilter}
         // modal props

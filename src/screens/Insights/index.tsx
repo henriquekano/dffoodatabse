@@ -31,7 +31,6 @@ class Insights extends PureComponent<Props> {
           leftComponent={(
             <TouchableOpacity
               onPress={() => {
-                console.log(match)
                 history.goBack()
               }}
             >

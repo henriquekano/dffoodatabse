@@ -15,7 +15,7 @@ class ScrollWhenHeightChanges extends PureComponent<ScrollWhenHeightChangesProps
     const { height } = this.state
     const { threshold = 1 } = this.props
 
-    // const newHeightLessThanThreshold = height && newHeight <= height * threshold
+    const newHeightLessThanThreshold = height && newHeight <= height * threshold
 
     if (!height) {
       this.setState({

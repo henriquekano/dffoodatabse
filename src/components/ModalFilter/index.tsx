@@ -13,6 +13,7 @@ import {
   Button,
 } from 'react-native-paper'
 import R from 'ramda'
+import { Chip } from '../index'
 
 export interface Filter {
   role: string[],
@@ -70,18 +71,14 @@ const ModalFilter = (props: Props) => {
         <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
           {
             characterRoles.map(role => (
-              <TouchableOpacity
-                onPress={() => onPressRole(role)}
+              <Chip
                 key={role}
-                style={[
-                  R.contains(role, rolesFilter) ? chipSelectedStyle : null,
-                  { paddingHorizontal: 6, paddingVertical: 4, margin: 5, borderWidth: 1, borderColor: 'grey', borderRadius: 20 }
-                ]}
+                onPress={() => onPressRole(role)}
+                style={R.contains(role, rolesFilter) ? chipSelectedStyle : null}
+                textStyle={R.contains(role, rolesFilter) ? chipSelectedTextStyle : null}
               >
-                <Text style={R.contains(role, rolesFilter) ? chipSelectedTextStyle : null} >
-                  { role }
-                </Text>
-              </TouchableOpacity>
+                { role }
+              </Chip>
             ))
           }
         </View>

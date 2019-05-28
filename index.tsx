@@ -2,17 +2,26 @@ import * as React from 'react'
 import { AppRegistry, StatusBar } from 'react-native'
 import { Provider } from 'react-redux'
 import { NativeRouter } from 'react-router-native'
-import { Provider as PaperProvider } from 'react-native-paper'
+import { Provider as PaperProvider, DefaultTheme } from 'react-native-paper'
 import { PersistGate } from 'redux-persist/integration/react'
 import { store, persistor } from './src/redux/store'
 import Router from './src/react-router/router'
 import StorybookUIRoot from './storybook'
 import { name as appName } from './app.json'
-import { CacheRetrieve, GearList } from './src/screens'
+import { CacheRetrieve } from './src/screens'
 
 const {
   process,
 } = global
+
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: 'tomato',
+    accent: 'yellow',
+  },
+}
 
 // StatusBar.setHidden(true, null)
 
@@ -23,7 +32,7 @@ const Application = () => (
       loading={(<CacheRetrieve />)}
       persistor={persistor}
     >
-      <PaperProvider>
+      <PaperProvider theme={theme}>
         <Router />
       </PaperProvider>
     </PersistGate>

@@ -1,11 +1,18 @@
-import React, { PureComponent, Fragment } from 'react'
-import { View } from 'react-native'
+import React, { Component, Fragment } from 'react'
+import { View, StyleSheet } from 'react-native'
 import ViewPager from '@react-native-community/viewpager'
 import { Text } from 'react-native-elements'
 import R from 'ramda'
 import PropTypes from 'prop-types'
 
-class SnappyScrollView extends PureComponent {
+const styles = StyleSheet.create({
+  container: { width: '100%', height: '100%' },
+  filler: { flex: 1 },
+})
+
+class SnappyScrollView extends Component {
+  cache = []
+
   constructor(props) {
     super(props)
     this.paginatedData = this.splitPageData()
@@ -16,12 +23,13 @@ class SnappyScrollView extends PureComponent {
     }
   }
 
+
   componentWillReceiveProps(nextProps) {
     const { data: currentData, itemsPerPage } = this.props
     const { data, itemsPerPage: nextItemsPerPage } = nextProps
     const dataChanged = currentData
       && data
-      && currentData.length !== data.length
+      && !R.equals(currentData, data)
       || itemsPerPage !== nextItemsPerPage
 
     if (dataChanged) {
@@ -31,6 +39,21 @@ class SnappyScrollView extends PureComponent {
         currentPage: 0,
       }, () => this.pagerRef.setPage(0))
     }
+  }
+
+  shouldComponentUpdate = (nextProps, nextState) => {
+    const { data: currentData, itemsPerPage } = this.props
+    const { data, itemsPerPage: nextItemsPerPage } = nextProps
+    const { currentData: nextPage } = nextState
+    const { currentPage } = this.state
+
+    const dataChanged = currentData
+      && data && currentData
+      && !R.equals(currentData, data)
+      || itemsPerPage !== nextItemsPerPage
+      || currentPage !== nextPage
+
+    return dataChanged
   }
 
   nullNonVisible = (page) => {
@@ -55,7 +78,9 @@ class SnappyScrollView extends PureComponent {
   }
 
   calculateNewPages = (event) => {
+    const { currentPage } = this.state
     const nextPage = event.nativeEvent.position
+
     this.setState({
       pagesData: this.nullNonVisible(nextPage),
       currentPage: nextPage,
@@ -69,7 +94,7 @@ class SnappyScrollView extends PureComponent {
     return (
       <View
         key={`SnappyScrollView-renderPage-${keyComplement}`}
-        style={{ width: '100%', height: '100%' }}
+        style={styles.container}
       >
         {
           columnizedData
@@ -85,7 +110,7 @@ class SnappyScrollView extends PureComponent {
                       : (
                         <Fragment>
                           {renderItem(column[0])}
-                          <View style={{ flex: 1 }} />
+                          <View style={styles.filler} />
                         </Fragment>
                       )
                   }
@@ -99,6 +124,9 @@ class SnappyScrollView extends PureComponent {
   }
 
   render = () => {
+    console.log('SnappyScrollView')
+    console.log(this.props)
+    console.log(this.state)
     const { pagesData, currentPage } = this.state
     return (
       <View style={{ flex: 1 }}>
@@ -106,7 +134,7 @@ class SnappyScrollView extends PureComponent {
           ref={(pagerRef) => { this.pagerRef = pagerRef }}
           style={{ flex: 1 }}
           initialPage={0}
-          onPageSelected={this.calculateNewPages}
+          onPageScroll={this.calculateNewPages}
         >
           {
             pagesData.map(this.renderPage)

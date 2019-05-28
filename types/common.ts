@@ -2,6 +2,7 @@
 // parsed stuff
 export interface Character {
   id: number,
+  icon: string,
   slug: string,
   released: boolean,
   profile: {

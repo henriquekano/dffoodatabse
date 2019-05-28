@@ -4,6 +4,7 @@ import { HeaderProps } from 'react-native-elements'
 import { Props as BarGraphProps } from './BarGraph/'
 import { Props as ModalFilterProps } from './ModalFilter/index'
 import { ScrollWhenHeightChangesProps } from './ScrollWhenHeightChanges/index'
+import { ChipProps } from './Chip/index'
 import { Gear } from '../../types/common'
 
 declare class DevDrawer extends React.PureComponent<any, any> {}
@@ -12,6 +13,7 @@ declare class BarGraph extends React.PureComponent<BarGraphProps, any>{}
 declare class Header extends React.PureComponent<HeaderProps, any>{}
 declare class ModalFilter extends React.PureComponent<ModalFilterProps, any>{}
 declare class ScrollWhenHeightChanges extends React.PureComponent<ScrollWhenHeightChangesProps, any>{}
+declare class Chip extends React.PureComponent<ChipProps, any>{}
 
 interface GearViewProps {
   limitBreakLevel: number,
