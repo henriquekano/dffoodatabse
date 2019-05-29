@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react'
+import { InteractionManager } from 'react-native'
 import { connect } from 'react-redux'
 import R from 'ramda'
 import _ from 'lodash'
@@ -10,6 +11,7 @@ import {
 } from '../../redux/actions.ts'
 import { INSIGHTS, CHARACTERS } from '../../react-router/routes'
 import { GearsListPresentational } from '../../presentational'
+import { checkUpdatedFor, saveDateFor } from '../../async-storage'
 
 class GearList extends PureComponent {
   constructor(props) {
@@ -26,7 +28,12 @@ class GearList extends PureComponent {
   }
 
   componentDidMount = () => {
-    store.dispatch(fetchFromDissidiadb())
+    InteractionManager.runAfterInteractions(async () => {
+      const updated = await checkUpdatedFor('DffooDb', 1)
+      if (!updated) {
+        store.dispatch(fetchFromDissidiadb())
+      }
+    })
   }
 
   handleSaveGear = ({ gear, limitBreakLevel }) => {
@@ -36,9 +43,31 @@ class GearList extends PureComponent {
     }))
   }
 
+  // The the fetchGears + presentational container is
+  // really heavy - gotta forcefully call requestAnimationFrame
+  // to avoid delays in the press
   handleOpenFilter = () => {
-    this.setState({
-      filterOpen: true,
+    // eslint-disable-next-line no-undef
+    requestAnimationFrame(() => {
+      this.setState({
+        filterOpen: true,
+      })
+    })
+  }
+
+  handleChartPress = () => {
+    const { history } = this.props
+    // eslint-disable-next-line no-undef
+    requestAnimationFrame(() => {
+      history.push(INSIGHTS)
+    })
+  }
+
+  handleCharacterPress = () => {
+    const { history } = this.props
+    // eslint-disable-next-line no-undef
+    requestAnimationFrame(() => {
+      history.push(CHARACTERS)
     })
   }
 
@@ -52,16 +81,6 @@ class GearList extends PureComponent {
     this.setState({
       filterOpen: false,
     })
-  }
-
-  handleChartPress = () => {
-    const { history } = this.props
-    history.push(INSIGHTS)
-  }
-
-  handleCharacterPress = () => {
-    const { history } = this.props
-    history.push(CHARACTERS)
   }
 
   handleSearchBarType = (text) => {
@@ -140,8 +159,8 @@ class GearList extends PureComponent {
         fetchError={fetchingError}
         gears={gears}
         filteredGears={filteredGears}
-        onFilterPress={this.handleOpenFilter}
         handleSearchBarType={_.debounce(this.handleSearchBarType, 500)}
+        onFilterPress={this.handleOpenFilter}
         onChartPress={this.handleChartPress}
         onCharacterPress={this.handleCharacterPress}
         roleFilter={roleFilter}

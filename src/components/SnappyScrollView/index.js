@@ -23,7 +23,6 @@ class SnappyScrollView extends Component {
     }
   }
 
-
   componentWillReceiveProps(nextProps) {
     const { data: currentData, itemsPerPage } = this.props
     const { data, itemsPerPage: nextItemsPerPage } = nextProps
@@ -124,9 +123,6 @@ class SnappyScrollView extends Component {
   }
 
   render = () => {
-    console.log('SnappyScrollView')
-    console.log(this.props)
-    console.log(this.state)
     const { pagesData, currentPage } = this.state
     return (
       <View style={{ flex: 1 }}>
