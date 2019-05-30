@@ -16,7 +16,7 @@ class SnappyScrollView extends Component {
   constructor(props) {
     super(props)
     this.paginatedData = this.splitPageData()
-    this.renderedCells = 5
+    this.renderedCells = 7
     this.state = {
       pagesData: this.nullNonVisible(0),
       currentPage: 0,

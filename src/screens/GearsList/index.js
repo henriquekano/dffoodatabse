@@ -88,16 +88,11 @@ class GearList extends PureComponent {
       nameFilter,
       roleFilter,
     } = this.state
-    this.setState(
-      {
-
-      },
-      () => store.dispatch(applyFilters({
-        characterNameFilter: nameFilter,
-        roleFilter,
-        gearNameFilter: text,
-      })),
-    )
+    store.dispatch(applyFilters({
+      characterNameFilter: nameFilter,
+      roleFilter,
+      gearNameFilter: text,
+    }))
   }
 
   closeFilterModal = () => {
