@@ -6,12 +6,14 @@
 
 function loadStories() {
   require('../src/components/BarGraph/index.stories');
+  require('../src/components/Drag/index.stories');
   require('../src/components/SnappyScrollView/index.stories');
   
 }
 
 const stories = [
   '../src/components/BarGraph/index.stories',
+  '../src/components/Drag/index.stories',
   '../src/components/SnappyScrollView/index.stories',
   
 ];

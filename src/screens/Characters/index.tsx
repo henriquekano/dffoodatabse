@@ -56,6 +56,10 @@ const CharacterItem = ({ data }) => (
 )
 
 class Characters extends PureComponent<CharactersScreenProps> {
+  state = {
+    isFabOpen: false,
+  }
+
   formatCharactersToFlatList = (): [{ data: Character, key: string }] => {
     const { characters } = this.props
     const formatCharacterData = R.applySpec({
@@ -66,6 +70,9 @@ class Characters extends PureComponent<CharactersScreenProps> {
   }
 
   render = () => {
+    const {
+      isFabOpen,
+    } = this.state
     return (
       <View style={{ flex: 1 }}>
         <Header />
@@ -76,12 +83,31 @@ class Characters extends PureComponent<CharactersScreenProps> {
             <CharacterItem data={data} key={key} />
           )}
         />
-        <FAB
-          style={{
-            position: 'absolute',
-            margin: 20,
-            right: 0,
-            bottom: 0,
+        <FAB.Group
+          open={isFabOpen}
+          actions={[
+            { icon: 'add', onPress: () => console.log('Pressed add') },
+            { icon: 'star', label: 'Star', onPress: () => console.log('Pressed star')},
+            { icon: 'email', label: 'Email', onPress: () => console.log('Pressed email') },
+            { icon: 'notifications', label: 'Remind', onPress: () => console.log('Pressed notifications') },
+          ]}
+          // style={{
+          //   position: 'absolute',
+          //   margin: 20,
+          //   right: 0,
+          //   bottom: 0,
+          // }}
+          onStateChange={({ open }: { open: Boolean }) =>
+            requestAnimationFrame(() => {
+              this.setState({
+                isFabOpen: open
+              })
+            })
+          }
+          onPress={() => {
+            if (isFabOpen) {
+              // do something if the speed dial is open
+            }
           }}
           icon="add"
         />

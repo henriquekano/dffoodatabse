@@ -5,10 +5,11 @@ import BarGraph from '.'
 
 storiesOf('BarGraph', module)
   .add('default', () => (
-    <BarGraph
-      characters={[]}
-      gears={[]}
-      roles={[]}
-      savedGears={[]}
-    />
+    // <BarGraph
+    //   characters={[]}
+    //   gears={[]}
+    //   roles={[]}
+    //   savedGears={[]}
+    // />
+    null
   ))
