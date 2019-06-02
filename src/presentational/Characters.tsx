@@ -1,13 +1,15 @@
 import * as React from 'react'
 import { PureComponent } from 'react'
-import { View, FlatList, Animated } from 'react-native'
+import { View, FlatList, Animated, DrawerLayoutAndroid, Dimensions } from 'react-native'
 import { Text, FAB, Divider } from 'react-native-paper'
 import FastImage from 'react-native-fast-image'
-import { Chip, Header, TagModal } from '../components/index'
+import { Chip, Header, DraggableView, DragLayout } from '../components/index'
 import { Character } from '../../types/common'
 import { snakeCaseToSpacedCamelCase } from '../data-formatter/string'
 
 const R = require('ramda')
+
+const { width: screenWidth } = Dimensions.get('window')
 
 const CharacterItem = ({ data }: { data: Character }) => (
   <View style={{ flexDirection: 'row' }}>
@@ -48,8 +50,9 @@ interface StateProps {
 }
 
 class CharactersPresentational extends PureComponent<CharactersPresentationalProps> {
-  state: StateProps = {
-    modalOpen: false,
+  drawerRef?: DrawerLayoutAndroid = React.createRef()
+  state = {
+    drawerOpen: false,
   }
 
   formatCharactersToFlatList = (): [{ data: Character, key: string }] => {
@@ -62,9 +65,22 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
   }
 
   handleToggleModal = () => {
-    this.setState((prevState: StateProps) => ({
-      modalOpen: !prevState.modalOpen,
-    }))
+    const { drawerOpen } = this.state
+    if (this.drawerRef) {
+      if (drawerOpen) {
+        this.setState({
+          drawerOpen: false,
+        }, () => {
+          this.drawerRef.closeDrawer()
+        })
+      } else {
+        this.setState({
+          drawerOpen: true,
+        }, () => {
+          this.drawerRef.openDrawer()
+        })
+      }
+    }
   }
 
   render = () => {
@@ -72,40 +88,43 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
       characterRoles,
       characters,
     } = this.props
-    const {
-      modalOpen,
-    } = this.state
     return (
       <View style={{ flex: 1 }}>
-        <Header />
-        <FlatList
-          ItemSeparatorComponent={Divider}
-          data={this.formatCharactersToFlatList()}
-          renderItem={({ item: { data, key } }: { item: { data: Character, key: string } }) => (
-            <CharacterItem data={data} key={key} />
-          )}
-        />
-        <FAB
-          style={{
-            position: 'absolute',
-            margin: 30,
-            right: 0,
-            bottom: 0,
-          }}
-          onPress={this.handleToggleModal}
-          icon="label"
-        />
-        <TagModal
-          characterRoles={characterRoles}
-          selectedRoles={[]}
-          characters={characters}
-          selectedCharacters={[]}
-          filterOpen={modalOpen}
-          onApply={console.log}
-          onClose={this.handleToggleModal}
-          onPressRole={console.log}
-          onPressCharacter={console.log}
-        />
+
+          <Header />
+          <FlatList
+            ItemSeparatorComponent={Divider}
+            data={this.formatCharactersToFlatList()}
+            renderItem={({ item: { data, key } }: { item: { data: Character, key: string } }) => (
+              <CharacterItem data={data} key={key} />
+            )}
+          />
+          <FAB
+            style={{
+              position: 'absolute',
+              margin: 30,
+              right: 0,
+              bottom: 0,
+            }}
+            onPress={this.handleToggleModal}
+            icon="label"
+          />
+          <DragLayout>
+            <View
+              style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', flexWrap: 'wrap' }}
+            >
+              {
+                characterRoles.map((role: string) => (
+                  <DraggableView key={role}>
+                    <Chip style={{ backgroundColor: 'white' }}>
+                      { role }
+                    </Chip>
+                  </DraggableView>
+                ))
+              }
+            </View>
+          </DragLayout>
+
       </View>
     )
   }

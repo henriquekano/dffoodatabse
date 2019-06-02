@@ -24,6 +24,7 @@ declare class DragTarget extends React.PureComponent<DragTargetProps, any>{}
 declare class DraggableView extends React.PureComponent<DraggableViewProps, any>{}
 declare class TagModal extends React.PureComponent<TagModalProps, any>{}
 declare class IconButton extends React.PureComponent<ThemedIconButtonProps, any>{}
+declare class DragLayout extends React.PureComponent<any, any>{}
 
 interface GearViewProps {
   limitBreakLevel: number,
