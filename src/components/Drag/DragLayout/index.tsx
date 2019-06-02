@@ -1,10 +1,13 @@
 import * as React from 'react'
 import { PureComponent } from 'react'
-import { View, ViewProps, Animated, StyleSheet } from 'react-native'
+import { View, ViewProps, Animated, StyleSheet, Dimensions } from 'react-native'
 import { Card } from 'react-native-paper'
 import { IconButton } from '../../index'
 
+const { width: screenWidth } = Dimensions.get('screen')
+
 export interface DragLayoutProps extends ViewProps {
+  onPressNub: () => void,
 }
 
 class DragLayout extends PureComponent<DragLayoutProps> {
@@ -56,7 +59,7 @@ class DragLayout extends PureComponent<DragLayoutProps> {
   }
 
   render = () => {
-    const { children, ...rest } = this.props
+    const { children, onPressNub, ...rest } = this.props
     const { width, isOpen } = this.state
     return (
       <View
@@ -85,7 +88,7 @@ class DragLayout extends PureComponent<DragLayoutProps> {
           >
             <IconButton
               icon={isOpen ? 'close' : 'label'}
-              onPress={this.toggle}
+              onPress={onPressNub}
             />
           </Card>
         </View>
@@ -93,14 +96,16 @@ class DragLayout extends PureComponent<DragLayoutProps> {
           style={{
             width: width.interpolate({
               inputRange: [0, 1],
-              outputRange: ['0%', '50%']
+              outputRange: [0, screenWidth / 2]
             }),
             backgroundColor: 'white',
             borderLeftWidth: StyleSheet.hairlineWidth,
             borderColor: 'lightgrey',
           }}
         >
-          { children }
+          <View style={{ width: screenWidth / 2 }}>
+            { children }
+          </View>
         </Animated.View>
       </View>
     )
