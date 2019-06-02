@@ -9,7 +9,7 @@ import {
   saveOwnedGear,
   applyFilters,
 } from '../../redux/actions.ts'
-import { INSIGHTS, CHARACTERS } from '../../react-router/routes'
+import { INSIGHTS, CHARACTERS } from '../../react-navigation/routes'
 import { GearsListPresentational } from '../../presentational'
 import { checkUpdatedFor, saveDateFor } from '../../async-storage'
 
@@ -56,18 +56,18 @@ class GearList extends PureComponent {
   }
 
   handleChartPress = () => {
-    const { history } = this.props
+    const { navigation } = this.props
     // eslint-disable-next-line no-undef
     requestAnimationFrame(() => {
-      history.push(INSIGHTS)
+      navigation.navigate(INSIGHTS)
     })
   }
 
   handleCharacterPress = () => {
-    const { history } = this.props
+    const { navigation } = this.props
     // eslint-disable-next-line no-undef
     requestAnimationFrame(() => {
-      history.push(CHARACTERS)
+      navigation.navigate(CHARACTERS)
     })
   }
 

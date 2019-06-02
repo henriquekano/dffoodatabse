@@ -88,7 +88,7 @@ const BarGraph = (props: Props): React.ReactNode => {
           gridMin={0}
           gridMax={maxXAxis}
           numberOfTicks={5}
-          animationDuration={2000}
+          animationDuration={3000}
         >
           {/* These values are all not used. The svg-chart makes magic behind the scenes */}
           <Grid

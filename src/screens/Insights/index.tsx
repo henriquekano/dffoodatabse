@@ -3,12 +3,13 @@ import { PureComponent } from 'react'
 import { View, TouchableOpacity } from 'react-native'
 import { Icon, Text } from 'react-native-elements'
 import { RouteComponentProps } from 'react-router-native'
+import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 import R from 'ramda'
 import { BarGraph, Header } from '../../components'
 import { Gear, Character, SavedGear } from '../../../types/common'
 
-export interface Props extends RouteComponentProps {
+export interface Props extends NavigationScreenProps {
   characters: Character[],
   gears: Gear[],
   characterRoles: string[],
@@ -18,8 +19,7 @@ export interface Props extends RouteComponentProps {
 class Insights extends PureComponent<Props> {
   render = () => {
     const {
-      history,
-      match,
+      navigation,
       characters,
       gears,
       characterRoles,
@@ -31,7 +31,7 @@ class Insights extends PureComponent<Props> {
           leftComponent={(
             <TouchableOpacity
               onPress={() => {
-                history.goBack()
+                navigation.goBack()
               }}
             >
               <Icon

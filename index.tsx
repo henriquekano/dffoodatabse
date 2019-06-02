@@ -5,7 +5,7 @@ import { NativeRouter } from 'react-router-native'
 import { Provider as PaperProvider, DefaultTheme, Portal } from 'react-native-paper'
 import { PersistGate } from 'redux-persist/integration/react'
 import { store, persistor } from './src/redux/store'
-import Router from './src/react-router/router'
+import Router from './src/react-navigation/index'
 import StorybookUIRoot from './storybook'
 import { name as appName } from './app.json'
 import { CacheRetrieve } from './src/screens'
@@ -18,8 +18,7 @@ const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: 'tomato',
-    accent: 'yellow',
+    primary: '#3D6DCC',
   },
 }
 

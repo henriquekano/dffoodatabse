@@ -48,48 +48,50 @@ const ModalFilter = (props: Props) => {
   return (
     <Modal
       animationType="fade"
+      transparent
       visible={filterOpen}
       hardwareAccelerated
     >
-      <View style={{ flex: 1 }}>
-        <TouchableOpacity style={{ paddingVertical: 5 }} onPress={onClose}>
-          <Icon
-            name="close"
-            color="black"
+      <View style={{ flex: 1, backgroundColor: 'rgba(128, 128, 128, 0.5)' }}>
+        <View style={{ flex: 1, margin: 10, backgroundColor: 'white', borderRadius: 10 }}>
+          <TouchableOpacity style={{ paddingVertical: 5 }} onPress={onClose}>
+            <Icon
+              name="close"
+              color="black"
+            />
+          </TouchableOpacity>
+          <View style={{ flexDirection: 'row', backgroundColor: '#3D6DCC', padding: 10 }}>
+            <Text style={{ color: 'white' }}>Character Name</Text>
+          </View>
+          <Input
+            onChangeText={onTypeCharacterName}
+            style={{ marginBottom: 10 }} placeholder="Marche"
           />
-        </TouchableOpacity>
-        <View style={{ flexDirection: 'row', backgroundColor: '#3D6DCC', padding: 10 }}>
-          <Text style={{ color: 'white' }}>Character Name</Text>
-        </View>
-        <Input
-          onChangeText={onTypeCharacterName}
-          style={{ marginBottom: 10 }} placeholder="Marche"
-        />
-        <View style={{ flexDirection: 'row', backgroundColor: '#3D6DCC', padding: 10 }}>
-          <Text style={{ color: 'white' }}>Character Role</Text>
-        </View>
-        <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
-          {
-            characterRoles.map(role => (
-              <Chip
-                key={role}
-                onPress={() => onPressRole(role)}
-                style={R.contains(role, rolesFilter) ? chipSelectedStyle : null}
-                textStyle={R.contains(role, rolesFilter) ? chipSelectedTextStyle : null}
-              >
-                { role }
-              </Chip>
-            ))
-          }
-        </View>
-        <View style={{ padding: 10 }}>
-          <Button
-            mode="contained"
-            color="#3D6DCC"
-            onPress={onApply}
-          >
-            APPLY
-          </Button>
+          <View style={{ flexDirection: 'row', backgroundColor: '#3D6DCC', padding: 10 }}>
+            <Text style={{ color: 'white' }}>Character Role</Text>
+          </View>
+          <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+            {
+              characterRoles.map(role => (
+                <Chip
+                  key={role}
+                  onPress={() => onPressRole(role)}
+                  selected={R.contains(role, rolesFilter)}
+                >
+                  { role }
+                </Chip>
+              ))
+            }
+          </View>
+          <View style={{ padding: 10 }}>
+            <Button
+              mode="contained"
+              color="#3D6DCC"
+              onPress={onApply}
+            >
+              APPLY
+            </Button>
+          </View>
         </View>
       </View>
     </Modal>

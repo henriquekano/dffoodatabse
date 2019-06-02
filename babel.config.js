@@ -3,7 +3,7 @@ module.exports = {
   plugins: ['transform-inline-environment-variables'],
   env: {
     production: {
-      plugins: ['transform-remove-console', 'react-native-paper/babel'],
+      plugins: ['transform-remove-console'],
     },
   },
 }

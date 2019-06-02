@@ -3,23 +3,30 @@ import { TouchableOpacity, ViewStyle, TextStyle } from 'react-native'
 import { Text } from 'react-native-paper'
 
 export interface ChipProps {
-  style: ViewStyle,
-  textStyle: TextStyle,
   onPress: () => void,
-  children: React.ReactNode,
+  children: string,
+  selected?: boolean,
+}
+
+const selectedChipStyle = {
+  backgroundColor: '#3D6DCC',
+}
+
+const selectedTextStyle = {
+  color: 'white',
 }
 
 const Chip = ({
-  style, onPress, children, textStyle,
+  onPress, children, selected,
 }: ChipProps) => (
   <TouchableOpacity
     onPress={onPress}
     style={[
-      style,
-      { paddingHorizontal: 6, paddingVertical: 4, margin: 5, borderWidth: 1, borderColor: 'grey', borderRadius: 20 }
+      { paddingHorizontal: 6, paddingVertical: 4, margin: 5, borderWidth: 1, borderColor: 'grey', borderRadius: 20 },
+      selected ? selectedChipStyle : null
     ]}
   >
-    <Text style={textStyle} >
+    <Text style={selected ? selectedTextStyle : null} >
       { children }
     </Text>
   </TouchableOpacity>

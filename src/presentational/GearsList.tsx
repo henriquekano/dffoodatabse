@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { View, ActivityIndicator, ScrollView, KeyboardAvoidingView } from 'react-native'
 import { Text, Icon } from 'react-native-elements'
-import { Chip, Searchbar } from 'react-native-paper'
+import { Searchbar } from 'react-native-paper'
 import * as _ from 'lodash'
 import {
   ScrollWhenHeightChanges,
@@ -10,6 +10,8 @@ import {
   ModalFilter,
   NetworkStatus,
   Header,
+  ScrollOfChips,
+  IconButton,
 } from '../components/index'
 import { Gear, SavedGear } from '../../types/common'
 import StateProps from '../redux/stateTypes'
@@ -62,7 +64,7 @@ const NoResultState = () => (
 )
 
 interface Filters {
-  nameFilter: string,
+  nameFilter?: string,
   roleFilter: string[],
 }
 
@@ -70,31 +72,17 @@ const Filters = ({
   nameFilter,
   roleFilter,
 }: Filters) => {
+  let chipList = roleFilter
+  if (nameFilter) {
+    chipList = [
+      `"${nameFilter}"`,
+      ...roleFilter,
+    ]
+  }
   return (
-    <View>
-      <ScrollView horizontal>
-        {
-          nameFilter
-            ? (
-              <Chip mode="outlined" style={{ margin: 5 }}>
-                { `"${nameFilter}"` }
-              </Chip>
-            )
-            : null
-        }
-        {
-          roleFilter && roleFilter.length > 0
-            ? (
-              roleFilter.map(role => (
-                <Chip mode="outlined" style={{ margin: 5 }} key={role}>
-                  { role }
-                </Chip>
-              ))
-            )
-            : null
-        }
-      </ScrollView>
-    </View>
+    <ScrollOfChips
+      chips={chipList}
+    />
   )
 }
 
@@ -270,7 +258,6 @@ const GearsListPresentational = ({
   return (
     <View style={{ flex: 1 }}>
       <Header
-        onFilterPress={onFilterPress}
         onChartPress={onChartPress}
         onCharacterPress={onCharacterPress}
       />
@@ -302,10 +289,17 @@ const GearsListPresentational = ({
       {
         gearsLoaded
           ? (
-            <Searchbar
-              onChangeText={handleSearchBarType}
-              placeholder="Gear name"
-            />
+            <View style={{ flexDirection: 'row' }}>
+              <Searchbar
+                style={{ flex: 1 }}
+                onChangeText={handleSearchBarType}
+                placeholder="Gear name"
+              />
+              <IconButton
+                icon="filter-list"
+                onPress={onFilterPress}
+              />
+            </View>
           )
           : null
       }

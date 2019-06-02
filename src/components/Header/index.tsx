@@ -3,13 +3,12 @@ import { StatusBar, View, TouchableOpacity } from 'react-native'
 import { Header as LibHeader, Icon, HeaderProps } from 'react-native-elements'
 
 export interface Props extends HeaderProps {
-  onFilterPress: () => void,
   onChartPress: () => void,
+  onCharacterPress: () => void,
 }
 
 const Header = (props: Props): React.ReactNode => {
   const {
-    onFilterPress,
     onChartPress,
     onCharacterPress,
     ...restOfProps
@@ -23,23 +22,23 @@ const Header = (props: Props): React.ReactNode => {
       }}
       rightComponent={(
         <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity style={{ backgroundColor: 'orange', paddingVertical: 10, paddingHorizontal: 10 }} onPress={onCharacterPress}>
+          <TouchableOpacity
+            style={{ backgroundColor: 'orange', paddingVertical: 10, paddingHorizontal: 10 }}
+            onPress={onCharacterPress}
+          >
             <Icon
               type="material-community"
               name="alien"
               color="white"
             />
           </TouchableOpacity>
-          <TouchableOpacity style={{ backgroundColor: 'orange', paddingVertical: 10, paddingHorizontal: 10 }} onPress={props.onChartPress}>
+          <TouchableOpacity
+            style={{ backgroundColor: 'orange', paddingVertical: 10, paddingHorizontal: 10 }}
+            onPress={props.onChartPress}
+          >
             <Icon
               type="material-community"
               name="lightbulb-on-outline"
-              color="white"
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={{ backgroundColor: 'orange', paddingVertical: 10, paddingHorizontal: 10 }} onPress={props.onFilterPress}>
-            <Icon
-              name="filter-list"
               color="white"
             />
           </TouchableOpacity>
