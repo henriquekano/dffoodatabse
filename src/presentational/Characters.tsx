@@ -111,7 +111,12 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
           />
           <DragLayout>
             <View
-              style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', flexWrap: 'wrap' }}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                flexWrap: 'wrap',
+              }}
             >
               {
                 characterRoles.map((role: string) => (

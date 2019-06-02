@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { PureComponent } from 'react'
 import { Animated, PanResponder, PanResponderInstance, ViewProps, View, } from 'react-native'
-import DragContext, { Message, Target } from '../contex'
+import { dropChannel, moveChannel, Message, Target } from '../contex'
 
 export interface DraggableViewProps extends ViewProps {
   value?: any,
@@ -16,9 +16,22 @@ class DraggableView extends PureComponent<DraggableViewProps> {
   goBackAnimation?: Animated.CompositeAnimation = undefined
   panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
-    onPanResponderMove: Animated.event([
-      null, { dx: this.state.panValue.x, dy: this.state.panValue.y }
-    ]),
+    onPanResponderMove: (e, gestureState) => {
+      const { panValue } = this.state
+      panValue.setValue({
+        x: gestureState.dx,
+        y: gestureState.dy,
+      })
+      moveChannel.next({
+        gestureResponderEvent: e,
+        gestureState,
+        value: this.props.value,
+        target: this.props.targetName,
+      })
+    },
+    // Animated.event([
+    //   null, { dx: this.state.panValue.x, dy: this.state.panValue.y }
+    // ]),
     onPanResponderRelease: (e, gestureState) => {
       if (this.goBackAnimation) {
         this.goBackAnimation.start()
@@ -28,7 +41,7 @@ class DraggableView extends PureComponent<DraggableViewProps> {
           value: this.props.value,
           target: this.props.targetName,
         }
-        DragContext.next(message)
+        dropChannel.next(message)
       }
     },
   })

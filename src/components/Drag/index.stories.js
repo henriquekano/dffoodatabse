@@ -1,9 +1,48 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React from 'react'
-import { View, Alert } from 'react-native'
+import React, { PureComponent } from 'react'
+import { View, Alert, Text, TouchableOpacity } from 'react-native'
 import { storiesOf } from '@storybook/react-native'
 import DraggableView from './DraggableView'
 import DragTarget from './DragTarget'
+import DragLayout from './DragLayout'
+
+class ShowMoveArea extends PureComponent {
+  state = {
+    insideTarget: false,
+    droppedInside: false,
+  }
+  render = () => {
+    const { insideTarget, droppedInside } = this.state
+    return (
+      <View style={{ flex: 1 }}>
+        <DraggableView
+          style={{ height: 40, width: 40, backgroundColor: 'red' }}
+          targetName="yellow_box"
+          value="42"
+        />
+        <DragTarget
+          style={{ height: 100, width: 200, backgroundColor: 'yellow' }}
+          name="yellow_box"
+          onEnterArea={() => this.setState({
+            insideTarget: true,
+          })}
+          onLeaveArea={() => this.setState({
+            insideTarget: false,
+          })}
+          onDrop={() => this.setState({
+            droppedInside: true,
+          })}
+        />
+        <Text>
+          is inside? { insideTarget ? 'true' : 'false' }
+        </Text>
+        <Text>
+          dropped inside? { droppedInside ? 'true' : 'false' }
+        </Text>
+      </View>
+    )
+  }
+}
 
 storiesOf('DragArea', module)
   .add('default', () => (
@@ -101,4 +140,35 @@ storiesOf('DragArea', module)
         onDrop={(e, gestureState, value) => Alert.alert('drop!', value)}
       />
     </View>
+  ))
+  .add('move callback', () => (
+    <ShowMoveArea />
+  ))
+
+class ControlledDragLayout extends PureComponent {
+  layoutRef = React.createRef()
+
+  render = () => (
+    <View style={{ flex: 1 }}>
+      <TouchableOpacity onPress={() => this.layoutRef.open()}>
+        <Text> Open </Text>
+      </TouchableOpacity>
+      <DragLayout
+        ref={(ref) => {
+          this.layoutRef = ref
+        }}
+      >
+        <View style={{ flex: 1, backgroundColor: 'red' }}>
+          <TouchableOpacity onPress={() => this.layoutRef.close()}>
+            <Text> Close </Text>
+          </TouchableOpacity>
+        </View>
+      </DragLayout>
+    </View>
+  )
+}
+
+storiesOf('DragLayout', module)
+  .add('default', () => (
+    <ControlledDragLayout />
   ))

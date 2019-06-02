@@ -11,4 +11,11 @@ export interface Message {
   value: any,
   target: Target,
 }
-export default new Subject()
+
+const dropChannel = new Subject()
+const moveChannel = new Subject()
+
+export {
+  dropChannel,
+  moveChannel,
+}
