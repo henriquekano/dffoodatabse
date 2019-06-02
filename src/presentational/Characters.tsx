@@ -11,7 +11,7 @@ const R = require('ramda')
 
 const { width: screenWidth } = Dimensions.get('window')
 
-const CharacterItem = ({ data }: { data: Character }) => (
+const CharacterItem = ({ data, isUnderneathDrawer }: { data: Character, isUnderneathDrawer: boolean }) => (
   <View style={{ flexDirection: 'row' }}>
     <View style={{ flex: 1, width: null, height: null, minHeight: 60, maxWidth: '100%', maxHeight: '100%' }}>
       <FastImage
@@ -71,13 +71,13 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
         this.setState({
           drawerOpen: false,
         }, () => {
-          this.drawerRef.closeDrawer()
+          this.drawerRef.close()
         })
       } else {
         this.setState({
           drawerOpen: true,
         }, () => {
-          this.drawerRef.openDrawer()
+          this.drawerRef.open()
         })
       }
     }
@@ -99,17 +99,11 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
               <CharacterItem data={data} key={key} />
             )}
           />
-          <FAB
-            style={{
-              position: 'absolute',
-              margin: 30,
-              right: 0,
-              bottom: 0,
+          <DragLayout
+            ref={(ref) => {
+              this.drawerRef = ref
             }}
-            onPress={this.handleToggleModal}
-            icon="label"
-          />
-          <DragLayout>
+          >
             <View
               style={{
                 flexDirection: 'row',

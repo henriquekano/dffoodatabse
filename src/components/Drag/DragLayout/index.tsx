@@ -1,15 +1,18 @@
 import * as React from 'react'
 import { PureComponent } from 'react'
-import { View, ViewProps, Animated } from 'react-native'
+import { View, ViewProps, Animated, StyleSheet } from 'react-native'
+import { Card } from 'react-native-paper'
+import { IconButton } from '../../index'
 
 export interface DragLayoutProps extends ViewProps {
-  isOpen: boolean,
 }
 
 class DragLayout extends PureComponent<DragLayoutProps> {
   state = {
     width: new Animated.Value(0),
+    isOpen: false,
   }
+
   openAnimation = Animated.timing(
     this.state.width,
     {
@@ -26,18 +29,35 @@ class DragLayout extends PureComponent<DragLayoutProps> {
   )
 
   open = () => {
-    this.closeAnimation.stop()
-    this.openAnimation.start()
+    this.setState({
+      isOpen: true,
+    }, () => {
+      this.closeAnimation.stop()
+      this.openAnimation.start()
+    })
   }
 
   close = () => {
-    this.openAnimation.stop()
-    this.closeAnimation.start()
+    this.setState({
+      isOpen: false,
+    }, () => {
+      this.openAnimation.stop()
+      this.closeAnimation.start()
+    })
+  }
+
+  toggle = () => {
+    const { isOpen } = this.state
+    if (isOpen) {
+      this.close()
+    } else {
+      this.open()
+    }
   }
 
   render = () => {
-    const { children, isOpen, ...rest } = this.props
-    const { width } = this.state
+    const { children, ...rest } = this.props
+    const { width, isOpen } = this.state
     return (
       <View
         style={{
@@ -51,13 +71,33 @@ class DragLayout extends PureComponent<DragLayoutProps> {
         }}
         {...rest}
       >
+        <View
+          style={{
+            justifyContent: 'center',
+          }}
+        >
+          <Card
+            style={{
+              backgroundColor: 'white',
+              borderWidth: StyleSheet.hairlineWidth,
+              borderColor: 'lightgrey',
+            }}
+          >
+            <IconButton
+              icon={isOpen ? 'close' : 'label'}
+              onPress={this.toggle}
+            />
+          </Card>
+        </View>
         <Animated.View
           style={{
             width: width.interpolate({
               inputRange: [0, 1],
               outputRange: ['0%', '50%']
             }),
-            backgroundColor: 'white'
+            backgroundColor: 'white',
+            borderLeftWidth: StyleSheet.hairlineWidth,
+            borderColor: 'lightgrey',
           }}
         >
           { children }
