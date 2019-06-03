@@ -6,6 +6,7 @@
 
 function loadStories() {
   require('../src/components/BarGraph/index.stories');
+  require('../src/components/Drag/DragFlatListTarget/index.stories');
   require('../src/components/Drag/index.stories');
   require('../src/components/SnappyScrollView/index.stories');
   
@@ -13,6 +14,7 @@ function loadStories() {
 
 const stories = [
   '../src/components/BarGraph/index.stories',
+  '../src/components/Drag/DragFlatListTarget/index.stories',
   '../src/components/Drag/index.stories',
   '../src/components/SnappyScrollView/index.stories',
   

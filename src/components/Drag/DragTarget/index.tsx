@@ -8,13 +8,19 @@ import {
   PanResponderGestureState,
   GestureResponderEvent,
 } from 'react-native'
-import { dropChannel, moveChannel, Message, Target } from '../contex'
+import { dropChannel as defaultDropChannel, moveChannel as defaultMoveChannel, Message, Target } from '../contex'
 
 export interface DragTargetProps extends ViewProps {
   onDrop?: (e: GestureResponderEvent, gestureState: PanResponderGestureState, value: any) => void,
   onEnterArea?: (e: GestureResponderEvent, gestureState: PanResponderGestureState, value: any) => void,
   onLeaveArea?: (e: GestureResponderEvent, gestureState: PanResponderGestureState, value: any) => void,
   name: string,
+  areaXOffset?: number,
+  areaYOffset?: number,
+  areaWidthMultiplier?: number,
+  areaHeightMultiplier?: number,
+  moveChannel?: any,
+  dropChannel?: any,
 }
 
 class DragTarget extends PureComponent<DragTargetProps> {
@@ -22,11 +28,19 @@ class DragTarget extends PureComponent<DragTargetProps> {
   dropSubscription?: any
   moveSubscription?: any
   isInsideArea = false
+  dropChannel?: any
+  moveChannel?: any
+  constructor(props: DragTargetProps) {
+    super(props)
+    const { moveChannel: propMoveChannel, dropChannel: propDropChannel } = props
+    this.moveChannel = propMoveChannel || defaultMoveChannel
+    this.dropChannel = propDropChannel || defaultDropChannel
+  }
 
   componentDidMount = () => {
     const { onDrop, onEnterArea, onLeaveArea } = this.props
     this.dropSubscription = onDrop
-      ? dropChannel.subscribe(
+      ? this.dropChannel.subscribe(
         ({ gestureResponderEvent, gestureState, value, target }: Message) => {
           const { moveX, moveY } = gestureState
           const IamTheTarget = target === 'all' || target === this.props.name
@@ -37,7 +51,7 @@ class DragTarget extends PureComponent<DragTargetProps> {
       )
       : null
     this.moveSubscription = onEnterArea || onLeaveArea
-      ? moveChannel.subscribe(
+      ? this.moveChannel.subscribe(
         ({ gestureResponderEvent, gestureState, value, target }: Message) => {
           const { moveX, moveY } = gestureState
           const IamTheTarget = target === 'all' || target === this.props.name
@@ -70,16 +84,30 @@ class DragTarget extends PureComponent<DragTargetProps> {
     if (!this.layout) {
       return false
     }
+    const {
+      areaWidthMultiplier = 1,
+      areaHeightMultiplier = 1,
+      areaXOffset = 0,
+      areaYOffset = 0,
+    } = this.props
 
-    const isWithinXRange = x > this.layout.x && x < this.layout.x + this.layout.width
-    const isWithinYRange = y > this.layout.y && y < this.layout.y + this.layout.height
+    const modifiedX = this.layout.x + areaXOffset
+    const modifiedY = this.layout.y + areaYOffset
+    const modifiedWidth = this.layout.width * areaWidthMultiplier
+    const modifiedHeight = this.layout.height * areaHeightMultiplier
+
+    const isWithinXRange = x > modifiedX
+      && x < modifiedX + modifiedWidth
+    const isWithinYRange = y > modifiedY
+      && y < modifiedY + modifiedHeight
     return isWithinXRange && isWithinYRange
   }
 
   trackViewPositionAndSize = (e: LayoutChangeEvent) => {
-    const { onLayout } = this.props
+    const { onLayout, name } = this.props
 
     this.layout = e.nativeEvent.layout
+    console.log(name, this.layout)
 
     onLayout && onLayout(e)
   }
