@@ -104,10 +104,9 @@ class DragTarget extends PureComponent<DragTargetProps> {
   }
 
   trackViewPositionAndSize = (e: LayoutChangeEvent) => {
-    const { onLayout, name } = this.props
+    const { onLayout } = this.props
 
     this.layout = e.nativeEvent.layout
-    console.log(name, this.layout)
 
     onLayout && onLayout(e)
   }
