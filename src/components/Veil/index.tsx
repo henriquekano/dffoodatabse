@@ -44,8 +44,8 @@ export default class Veil extends PureComponent<VeilProps> {
               <View
                 style={{
                   position: 'absolute',
-                  top: y,
-                  left: x,
+                  top: 0,
+                  left: 0,
                   width: width,
                   height: height,
                   backgroundColor: 'rgba(128, 128, 128, 0.5)'
