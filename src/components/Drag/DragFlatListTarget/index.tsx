@@ -11,7 +11,8 @@ import {
   PanResponderGestureState,
   ListRenderItemInfo,
 } from 'react-native'
-import { Subject } from 'rxjs'
+import { Subject, interval } from 'rxjs'
+import { throttle } from 'rxjs/operators'
 import { moveChannel, dropChannel, Message } from '../contex'
 import { DragTarget } from '../../index'
 
@@ -131,42 +132,49 @@ class DragFlatListTarget<T> extends PureComponent<DragFlatListTargetProps<T>> {
   }
 
   componentDidMount = () => {
-    moveChannel.subscribe(
-      ({ gestureResponderEvent, gestureState, value, target }: Message) => {
-        const { hoveringIndex } = this.state
-        const foundCell = this.searchPointedCell(
-          gestureState.dx,
-          gestureState.dy,
-        )
-        // console.log(hoveringIndex, this.state, foundCell)
-        if (foundCell) {
-          const { index } = foundCell
-          if (hoveringIndex !== index) {
-            this.setState({
-              hoveringIndex: index,
-            })
+    moveChannel
+      .pipe(throttle(val => interval(50)))
+      .subscribe(
+        ({ gestureResponderEvent, gestureState, value, target }: Message) => {
+          const { hoveringIndex } = this.state
+          const foundCell = this.searchPointedCell(
+            gestureState.dx,
+            gestureState.dy,
+          )
+          // console.log(hoveringIndex, this.state, foundCell)
+          if (foundCell) {
+            const { index } = foundCell
+            if (hoveringIndex !== index) {
+              this.setState({
+                hoveringIndex: index,
+              })
+            }
           }
         }
-      }
-    )
-    dropChannel.subscribe(
-      ({ gestureResponderEvent, gestureState, value, target }: Message) => {
-        const { droppedIndex } = this.state
-        const foundCell = this.searchPointedCell(
-          gestureState.dx,
-          gestureState.dy,
-        )
-        // console.log(droppedIndex, this.state, foundCell)
-        if (foundCell) {
-          const { index } = foundCell
-          if (droppedIndex !== index) {
-            this.setState({
-              droppedIndex: index,
-            })
+      )
+    dropChannel
+      .subscribe(
+        ({ gestureResponderEvent, gestureState, value, target }: Message) => {
+          const { onDrop } = this.props
+          const { droppedIndex } = this.state
+          const foundCell = this.searchPointedCell(
+            gestureState.dx,
+            gestureState.dy,
+          )
+          // console.log(droppedIndex, this.state, foundCell)
+          if (foundCell) {
+            const { index } = foundCell
+            if (droppedIndex !== index) {
+              this.setState(
+                {
+                  droppedIndex: index,
+                }, () =>
+                  onDrop && onDrop(gestureResponderEvent, gestureState, value)
+                )
+            }
           }
         }
-      }
-    )
+      )
   }
 
   componentWillUnmount = () => {
@@ -199,7 +207,7 @@ class DragFlatListTarget<T> extends PureComponent<DragFlatListTargetProps<T>> {
     }
 
     try {
-      let verticalSum = -this.scrollOffset.y
+      let verticalSum = -this.scrollOffset.y + this.listLayout.y
       let index = 0
       for (; index < this.itemsLayouts.length && verticalSum < y; index ++) {
         const currentItem = this.itemsLayouts[index]
@@ -279,6 +287,7 @@ class DragFlatListTarget<T> extends PureComponent<DragFlatListTargetProps<T>> {
     return (
       <FlatList
         {...rest}
+        keyExtractor={keyExtractor}
         extraData={this.state}
         data={data}
         onScroll={this.handleOffsetChange}
