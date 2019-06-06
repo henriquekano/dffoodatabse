@@ -32,21 +32,21 @@ class DragLayout extends PureComponent<DragLayoutProps> {
   )
 
   open = () => {
-    this.setState({
-      isOpen: true,
-    }, () => {
-      this.closeAnimation.stop()
-      this.openAnimation.start()
-    })
+    this.closeAnimation.stop()
+    this.openAnimation.start(() =>
+      this.setState({
+        isOpen: true,
+      })
+    )
   }
 
   close = () => {
-    this.setState({
-      isOpen: false,
-    }, () => {
-      this.openAnimation.stop()
-      this.closeAnimation.start()
-    })
+    this.openAnimation.stop()
+    this.closeAnimation.start(() =>
+      this.setState({
+        isOpen: false,
+      })
+    )
   }
 
   toggle = () => {
@@ -69,7 +69,6 @@ class DragLayout extends PureComponent<DragLayoutProps> {
           position: 'absolute',
           width: '100%',
           height: '100%',
-          marginTop: 56,
           flex: 2,
         }}
         {...rest}

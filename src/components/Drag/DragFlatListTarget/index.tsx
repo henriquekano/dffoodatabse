@@ -13,6 +13,7 @@ import {
 } from 'react-native'
 import { Subject, interval } from 'rxjs'
 import { throttle } from 'rxjs/operators'
+import R from 'ramda'
 import { moveChannel, dropChannel, Message } from '../contex'
 import { DragTarget } from '../../index'
 
@@ -40,9 +41,13 @@ class RenderItem<T> extends Component<RenderItemProps<T>> {
   }
 
   shouldComponentUpdate = (nextProps: RenderItem<T>) => {
-    const { index } = this.props
+    const { index, ...rest } = this.props
     const { hoveringHere, droppedHere } = this.state
-    const { hoveringIndex: nextHovering, droppedIndex: nextDrop } = nextProps
+    const {
+      hoveringIndex: nextHovering,
+      droppedIndex: nextDrop,
+      ...nextRest
+    } = nextProps
 
     const isHoveringHere = nextHovering === index
     const isDroppedHere = nextDrop === index
@@ -50,7 +55,7 @@ class RenderItem<T> extends Component<RenderItemProps<T>> {
     const changedHoverState = hoveringHere !== isHoveringHere
     const changedDropState = droppedHere !== isDroppedHere
 
-    return changedDropState || changedHoverState
+    return changedDropState || changedHoverState || !R.equals(rest, nextRest)
   }
 
   componentWillReceiveProps = (nextProps: RenderItem<T>) => {
@@ -105,17 +110,18 @@ export interface DraggableRenderItemInfo<ItemT> extends ListRenderItemInfo<ItemT
   draggableDropped: boolean,
 }
 export type DraggableRenderItem<ItemT> = (info: DraggableRenderItemInfo<ItemT>) => React.ReactElement | null
-export type EventListener = (e: GestureResponderEvent, gestureState: PanResponderGestureState, value: any) => void
+export type EventListener<ItemT> = (e: GestureResponderEvent, gestureState: PanResponderGestureState, value: any, item: ItemT) => void
 export type DataReducer<ItemT> = (item: ItemT, index: number) => string
 
 export interface DragFlatListTargetProps<T> {
   data: T[],
+  extraData: any,
   nameExtractor: DataReducer<T>,
   renderItem: DraggableRenderItem<T>,
   keyExtractor: DataReducer<T>,
-  onDrop?: EventListener,
-  onEnterArea?: EventListener,
-  onLeaveArea?: EventListener,
+  onDrop?: EventListener<T>,
+  onEnterArea?: EventListener<T>,
+  onLeaveArea?: EventListener<T>,
   dragAreaXOffset?: number,
   dragAreaYOffset?: number,
   dragAreaWidthMultiplier?: number,
@@ -135,11 +141,11 @@ class DragFlatListTarget<T> extends PureComponent<DragFlatListTargetProps<T>> {
     moveChannel
       .pipe(throttle(val => interval(50)))
       .subscribe(
-        ({ gestureResponderEvent, gestureState, value, target }: Message) => {
+        ({ gestureResponderEvent, gestureState, value, target, initialPosition }: Message) => {
           const { hoveringIndex } = this.state
           const foundCell = this.searchPointedCell(
-            gestureState.dx,
-            gestureState.dy,
+            gestureResponderEvent.nativeEvent.pageX,
+            gestureResponderEvent.nativeEvent.pageY,
           )
           // console.log(hoveringIndex, this.state, foundCell)
           if (foundCell) {
@@ -154,12 +160,12 @@ class DragFlatListTarget<T> extends PureComponent<DragFlatListTargetProps<T>> {
       )
     dropChannel
       .subscribe(
-        ({ gestureResponderEvent, gestureState, value, target }: Message) => {
-          const { onDrop } = this.props
+        ({ gestureResponderEvent, gestureState, value, target, initialPosition }: Message) => {
+          const { onDrop, data } = this.props
           const { droppedIndex } = this.state
           const foundCell = this.searchPointedCell(
-            gestureState.dx,
-            gestureState.dy,
+            gestureResponderEvent.nativeEvent.pageX,
+            gestureResponderEvent.nativeEvent.pageY,
           )
           // console.log(droppedIndex, this.state, foundCell)
           if (foundCell) {
@@ -169,7 +175,7 @@ class DragFlatListTarget<T> extends PureComponent<DragFlatListTargetProps<T>> {
                 {
                   droppedIndex: index,
                 }, () =>
-                  onDrop && onDrop(gestureResponderEvent, gestureState, value)
+                  onDrop && onDrop(gestureResponderEvent, gestureState, value, data[index])
                 )
             }
           }
@@ -202,6 +208,7 @@ class DragFlatListTarget<T> extends PureComponent<DragFlatListTargetProps<T>> {
 
   // gonna assume vertical list and that all children are in their own row
   searchPointedCell = (x: number, y: number) => {
+    const { dragAreaWidthMultiplier = 1 } = this.props
     if (!this.hasAllTheInformationNecessary()) {
       return null
     }
@@ -218,24 +225,30 @@ class DragFlatListTarget<T> extends PureComponent<DragFlatListTargetProps<T>> {
       // i.e., it's pointing to the NEXT element
       // the '-1' fixes that. Maybe there's a more elegant way to do it...
       // Same logic with the verticalSum - this.itemsLayouts[index].height
-      if (index < this.itemsLayouts.length - 1) {
+      const possibleCurrentTarget = this.itemsLayouts[index - 1]
+      const dropIsWithinTargetXBounds = x >= possibleCurrentTarget.x
+        && x <= (possibleCurrentTarget.x + possibleCurrentTarget.width) * dragAreaWidthMultiplier
+
+      if (dropIsWithinTargetXBounds) {
+        if (index < this.itemsLayouts.length - 1) {
+          return {
+            element: {
+              ...this.itemsLayouts[index - 1],
+              x: 0,
+              y: verticalSum - this.itemsLayouts[index].height,
+            },
+            index: index - 1,
+          }
+        }
+        // Edge case: it's the last item
         return {
           element: {
             ...this.itemsLayouts[index - 1],
             x: 0,
-            y: verticalSum - this.itemsLayouts[index].height,
+            y: verticalSum - this.itemsLayouts[index - 1].height,
           },
           index: index - 1,
         }
-      }
-      // Edge case: it's the last item
-      return {
-        element: {
-          ...this.itemsLayouts[index - 1],
-          x: 0,
-          y: verticalSum - this.itemsLayouts[index - 1].height,
-        },
-        index: index - 1,
       }
     } catch (err) {
       // Pretty sure that if the 'currentItem'
@@ -245,8 +258,9 @@ class DragFlatListTarget<T> extends PureComponent<DragFlatListTargetProps<T>> {
       // a exception may occur - easily reproduceable
       // by dragging the draggable rapidly over the
       // list items
-      return null
     }
+
+    return null
   }
 
   renderItem = ({ item, index, separators }) => {
@@ -282,13 +296,17 @@ class DragFlatListTarget<T> extends PureComponent<DragFlatListTargetProps<T>> {
       keyExtractor,
       nameExtractor,
       data,
+      extraData,
       ...rest
     } = this.props
     return (
       <FlatList
         {...rest}
         keyExtractor={keyExtractor}
-        extraData={this.state}
+        extraData={{
+          ...this.state,
+          ...extraData,
+        }}
         data={data}
         onScroll={this.handleOffsetChange}
         renderItem={this.renderItem}

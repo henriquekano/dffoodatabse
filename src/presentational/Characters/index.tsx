@@ -1,7 +1,9 @@
+import * as React from 'react'
 import { PureComponent } from 'react'
 import { View, FlatList, DrawerLayoutAndroid, Dimensions } from 'react-native'
 import { Divider } from 'react-native-paper'
-import { Chip, Header, DraggableView, DragLayout } from '../../components/index'
+import { Chip, Header, DraggableView, DragLayout, DragFlatListTarget } from '../../components/index'
+import { DraggableRenderItemInfo } from '../../components/Drag/DragFlatListTarget/index'
 import { Character } from '../../../types/common'
 import CharacterItem from './CharacterItem'
 
@@ -51,41 +53,51 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
     } = this.state
     return (
       <View style={{ flex: 1 }}>
-
-          <Header />
-          <FlatList
-            ItemSeparatorComponent={Divider}
-            data={this.formatCharactersToFlatList()}
-            renderItem={({ item: { data, key } }: { item: { data: Character, key: string } }) => (
-              <CharacterItem isUnderneathDrawer={drawerOpen} data={data} key={key} />
-            )}
-          />
-          <DragLayout
-            ref={(ref) => {
-              this.drawerRef = ref
+        <Header />
+        <DragFlatListTarget
+          keyExtractor={item => item.key}
+          nameExtractor={item => item.key}
+          ItemSeparatorComponent={Divider}
+          onDrop={console.log}
+          dragAreaWidthMultiplier={0.5}
+          extraData={drawerOpen}
+          data={this.formatCharactersToFlatList()}
+          renderItem={(
+            { item: { data, key }, index, separator, draggableHovering, draggableDropped }
+            : DraggableRenderItemInfo
+          ) => (
+            <CharacterItem
+              isUnderneathDrawer={!draggableHovering && drawerOpen}
+              data={data}
+              key={key}
+            />
+          )}
+        />
+        <DragLayout
+          ref={(ref) => {
+            this.drawerRef = ref
+          }}
+          onPressNub={this.handleToggleModal}
+        >
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              flexWrap: 'wrap',
             }}
-            onPressNub={this.handleToggleModal}
           >
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                flexWrap: 'wrap',
-              }}
-            >
-              {
-                characterRoles.map((role: string) => (
-                  <DraggableView targetName="all" key={role}>
-                    <Chip style={{ backgroundColor: 'white' }}>
-                      { role }
-                    </Chip>
-                  </DraggableView>
-                ))
-              }
-            </View>
-          </DragLayout>
-
+            {
+              characterRoles.map((role: string) => (
+                <DraggableView value={role} targetName="all" key={role}>
+                  <Chip style={{ backgroundColor: 'white' }}>
+                    { role }
+                  </Chip>
+                </DraggableView>
+              ))
+            }
+          </View>
+        </DragLayout>
       </View>
     )
   }

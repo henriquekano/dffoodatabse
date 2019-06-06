@@ -19,7 +19,6 @@ class CharacterItem extends PureComponent<CharacterItemProps> {
 
   handleDraggableEnteredArea = () => {
     const { data, isUnderneathDrawer } = this.props
-    console.log('handleDraggableEnteredArea', data.slug)
     this.setState({
       draggableIsBeingHoldAbove: true,
     })
@@ -27,7 +26,6 @@ class CharacterItem extends PureComponent<CharacterItemProps> {
 
   handleDraggableLeftArea = () => {
     const { data, isUnderneathDrawer } = this.props
-    console.log('handleDraggableLeftArea', data.slug)
     this.setState({
       draggableIsBeingHoldAbove: false,
     })

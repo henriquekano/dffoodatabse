@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { PureComponent } from 'react'
-import { Animated, PanResponder, ViewProps, View, } from 'react-native'
+import { Animated, PanResponder, ViewProps, View, LayoutChangeEvent, LayoutRectangle } from 'react-native'
 import {
   dropChannel as defaultDropChannel,
   moveChannel as defaultMoveChannel,
@@ -25,34 +25,46 @@ class DraggableView extends PureComponent<DraggableViewProps> {
   panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderMove: (e, gestureState) => {
-      const { panValue } = this.state
-      panValue.setValue({
-        x: gestureState.dx,
-        y: gestureState.dy,
-      })
-      this.moveChannel.next({
-        gestureResponderEvent: e,
-        gestureState,
-        value: this.props.value,
-        target: this.props.targetName,
-      })
+      if (this.initialPosition) {
+        const { x, y } = this.initialPosition
+        const { panValue } = this.state
+        panValue.setValue({
+          x: gestureState.dx,
+          y: gestureState.dy,
+        })
+        this.moveChannel.next({
+          gestureResponderEvent: e,
+          gestureState,
+          value: this.props.value,
+          target: this.props.targetName,
+          initialPosition: { x, y },
+        })
+      }
     },
     // Animated.event([
     //   null, { dx: this.state.panValue.x, dy: this.state.panValue.y }
     // ]),
     onPanResponderRelease: (e, gestureState) => {
-      if (this.goBackAnimation) {
-        this.goBackAnimation.start()
-        const message: Message = {
-          gestureResponderEvent: e,
-          gestureState,
-          value: this.props.value,
-          target: this.props.targetName,
+      if (this.initialPosition) {
+        const { x, y } = this.initialPosition
+        if (this.goBackAnimation) {
+          this.goBackAnimation.start()
+          const message: Message = {
+            gestureResponderEvent: e,
+            gestureState,
+            value: this.props.value,
+            target: this.props.targetName,
+          }
+          this.dropChannel.next(message)
         }
-        this.dropChannel.next(message)
       }
     },
   })
+
+  initialPosition?: LayoutRectangle
+  handleInitialLayout = (e: LayoutChangeEvent) => {
+    this.initialPosition = e.nativeEvent.layout
+  }
 
   constructor (props: DraggableViewProps) {
     super(props)
@@ -82,6 +94,7 @@ class DraggableView extends PureComponent<DraggableViewProps> {
       <Animated.View
         {...this.panResponder.panHandlers}
         {...this.props}
+        onLayout={this.handleInitialLayout}
         style={[{
           transform: panValue.getTranslateTransform()
         }, style]}
