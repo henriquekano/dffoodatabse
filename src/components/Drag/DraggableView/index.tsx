@@ -28,9 +28,11 @@ class DraggableView extends PureComponent<DraggableViewProps> {
       if (this.initialPosition) {
         const { x, y } = this.initialPosition
         const { panValue } = this.state
-        panValue.setValue({
-          x: gestureState.dx,
-          y: gestureState.dy,
+        requestAnimationFrame(() => {
+          panValue.setValue({
+            x: gestureState.dx,
+            y: gestureState.dy,
+          })
         })
         this.moveChannel.next({
           gestureResponderEvent: e,

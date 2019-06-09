@@ -27,7 +27,8 @@ interface RenderItemProps<T> {
   nameExtractor: (item: T, index: number) => string,
   moveChannel: any,
   dropChannel: any,
-  dragTargetRenderItem: (something: any) => any
+  dragTargetRenderItem: (something: any) => any,
+  extraData: any,
 }
 
 class RenderItem<T> extends Component<RenderItemProps<T>> {
@@ -41,12 +42,12 @@ class RenderItem<T> extends Component<RenderItemProps<T>> {
   }
 
   shouldComponentUpdate = (nextProps: RenderItem<T>) => {
-    const { index, ...rest } = this.props
+    const { index, extraData } = this.props
     const { hoveringHere, droppedHere } = this.state
     const {
       hoveringIndex: nextHovering,
       droppedIndex: nextDrop,
-      ...nextRest
+      extraData: nextExtraData,
     } = nextProps
 
     const isHoveringHere = nextHovering === index
@@ -55,7 +56,9 @@ class RenderItem<T> extends Component<RenderItemProps<T>> {
     const changedHoverState = hoveringHere !== isHoveringHere
     const changedDropState = droppedHere !== isDroppedHere
 
-    return changedDropState || changedHoverState || !R.equals(rest, nextRest)
+    const changedExtraData = !R.equals(extraData, nextExtraData)
+
+    return changedDropState || changedHoverState || changedExtraData
   }
 
   componentWillReceiveProps = (nextProps: RenderItem<T>) => {
@@ -272,6 +275,7 @@ class DragFlatListTarget<T> extends PureComponent<DragFlatListTargetProps<T>> {
       renderItem: dragTargetRenderItem,
       keyExtractor,
       nameExtractor,
+      extraData,
     } = this.props
     return (
       <RenderItem
@@ -286,6 +290,7 @@ class DragFlatListTarget<T> extends PureComponent<DragFlatListTargetProps<T>> {
         item={item}
         nameExtractor={nameExtractor}
         separators={separators}
+        extraData={extraData}
       />
     )
   }

@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { View, Text, Alert } from 'react-native'
 import { storiesOf } from '@storybook/react-native'
 import R from 'ramda'
@@ -8,6 +8,37 @@ import DraggableView from '../DraggableView/index'
 import { Veil } from '../../index'
 
 const mockData = R.times(R.identity, 20)
+
+class RenderItem extends PureComponent {
+  render = () => {
+    const {
+      item, index, separators, draggableDropped, draggableHovering
+    } = this.props
+    return (
+      <Veil
+        conceal={!draggableHovering}
+        style={{
+          height: 100,
+          padding: 1,
+          margin: 10,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: index % 2 === 0 ? 'red' : 'blue',
+        }}
+      >
+        <Text style={{ color: 'white' }}>
+          { item }
+        </Text>
+        <Text style={{ color: 'white' }}>
+          { draggableDropped ? 'DROPPED HERE!' : null }
+        </Text>
+        <Text style={{ color: 'white' }}>
+          { draggableHovering ? 'HOVERING HERE!' : null }
+        </Text>
+      </Veil>
+    )
+  }
+}
 
 storiesOf('DragFlatListTarget', module)
   .add('default', () => (
@@ -20,31 +51,17 @@ storiesOf('DragFlatListTarget', module)
         keyExtractor={(item, index) => `${item}-${index}`}
         nameExtractor={(item, index) => item}
         onDrop={(e, gestureState, value) => Alert.alert('Drop Value', value)}
-        renderItem={({ item, index, separators, draggableDropped, draggableHovering }) => {
-          return (
-            <Veil
-              conceal={!draggableHovering}
-              style={{
-                height: 100,
-                padding: 1,
-                margin: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: index % 2 === 0 ? 'red' : 'blue',
-              }}
-            >
-              <Text style={{ color: 'white' }}>
-                { item }
-              </Text>
-              <Text style={{ color: 'white' }}>
-                { draggableDropped ? 'DROPPED HERE!' : null }
-              </Text>
-              <Text style={{ color: 'white' }}>
-                { draggableHovering ? 'HOVERING HERE!' : null }
-              </Text>
-            </Veil>
+        renderItem={({ item, index, separators, draggableDropped, draggableHovering }) =>
+          (
+            <RenderItem
+              item={item}
+              index={index}
+              separators={separators}
+              draggableDropped={draggableDropped}
+              draggableHovering={draggableHovering}
+            />
           )
-        }}
+        }
       />
       <DraggableView
         value="SUPER_DUPER_VALUE!"

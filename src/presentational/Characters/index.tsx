@@ -57,10 +57,9 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
         <DragFlatListTarget
           keyExtractor={item => item.key}
           nameExtractor={item => item.key}
-          ItemSeparatorComponent={Divider}
           onDrop={console.log}
           dragAreaWidthMultiplier={0.5}
-          extraData={drawerOpen}
+          extraData={{ drawerOpen }}
           data={this.formatCharactersToFlatList()}
           renderItem={(
             { item: { data, key }, index, separator, draggableHovering, draggableDropped }
