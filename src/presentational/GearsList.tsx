@@ -63,7 +63,7 @@ const NoResultState = () => (
   </View>
 )
 
-interface Filters {
+interface FiltersProps {
   nameFilter?: string,
   roleFilter: string[],
 }
@@ -71,7 +71,7 @@ interface Filters {
 const Filters = ({
   nameFilter,
   roleFilter,
-}: Filters) => {
+}: FiltersProps) => {
   let chipList = roleFilter
   if (nameFilter) {
     chipList = [
@@ -80,9 +80,7 @@ const Filters = ({
     ]
   }
   return (
-    <ScrollOfChips
-      chips={chipList}
-    />
+    <ScrollOfChips chips={chipList} />
   )
 }
 

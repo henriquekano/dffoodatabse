@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { PureComponent } from 'react'
-import { View, FlatList, Dimensions } from 'react-native'
-import { Divider, Snackbar } from 'react-native-paper'
+import { View, ScrollView } from 'react-native'
+import { Snackbar, TextInput } from 'react-native-paper'
 import { Chip, Header, DraggableView, DragLayout, DragFlatListTarget } from '../../components/index'
 import { DraggableRenderItemInfo } from '../../components/Drag/DragFlatListTarget/index'
 import { Character } from '../../../types/common'
@@ -135,6 +135,9 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
                 </DraggableView>
               ))
             }
+          </View>
+          <View style={{ padding: 5 }}>
+            <TextInput mode="outlined" placeholder="New Role"/>
           </View>
         </DragLayout>
       </View>

@@ -95,14 +95,17 @@ class DragLayout extends PureComponent<DragLayoutProps> {
           style={{
             width: width.interpolate({
               inputRange: [0, 1],
-              outputRange: [0, screenWidth / 2]
+              outputRange: [0, screenWidth * 3 / 5]
             }),
+          }}
+        >
+          <View style={{ height: 56 }}/>
+          <View style={{
+            width: screenWidth * 3 / 5,
             backgroundColor: 'white',
             borderLeftWidth: StyleSheet.hairlineWidth,
             borderColor: 'lightgrey',
-          }}
-        >
-          <View style={{ width: screenWidth / 2 }}>
+          }}>
             { children }
           </View>
         </Animated.View>

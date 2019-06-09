@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { View, ScrollView, StyleProp, ViewStyle } from 'react-native'
-import { Chip, DraggableView } from '../index'
+import { View, ScrollView, ViewStyle } from 'react-native'
+import { Chip } from '../index'
 
 export interface ScrollOfChipsProps {
   chips: string[],
@@ -15,14 +15,9 @@ const ScrollOfChips = ({
       <ScrollView horizontal>
         {
           chips.map(text => (
-            <DraggableView
-              targetName="all"
-              style={{ zIndex: 1, position: 'absolute' }}
-            >
-              <Chip key={text}>
-                { text }
-              </Chip>
-            </DraggableView>
+            <Chip key={text}>
+              { text }
+            </Chip>
           ))
         }
       </ScrollView>

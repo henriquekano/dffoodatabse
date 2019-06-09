@@ -3,14 +3,15 @@ import {
   TouchableOpacity,
   View,
   Modal,
+  StyleSheet,
 } from 'react-native'
 import {
   Icon,
   Text,
-  Input,
 } from 'react-native-elements'
 import {
   Button,
+  TextInput,
 } from 'react-native-paper'
 import R from 'ramda'
 import { Chip } from '../index'
@@ -39,12 +40,7 @@ const ModalFilter = (props: Props) => {
     onClose,
     onTypeCharacterName,
   } = props
-  const chipSelectedStyle = {
-    backgroundColor: '#3D6DCC',
-  }
-  const chipSelectedTextStyle = {
-    color: 'white',
-  }
+
   return (
     <Modal
       animationType="fade"
@@ -54,19 +50,24 @@ const ModalFilter = (props: Props) => {
     >
       <View style={{ flex: 1, backgroundColor: 'rgba(128, 128, 128, 0.5)' }}>
         <View style={{ flex: 1, margin: 10, backgroundColor: 'white', borderRadius: 10 }}>
-          <TouchableOpacity style={{ paddingVertical: 5 }} onPress={onClose}>
+          <TouchableOpacity
+            style={{
+              paddingVertical: 5,
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              borderColor: 'lightgrey',
+            }} onPress={onClose}>
             <Icon
               name="close"
               color="black"
             />
           </TouchableOpacity>
-          <View style={{ flexDirection: 'row', backgroundColor: '#3D6DCC', padding: 10 }}>
-            <Text style={{ color: 'white' }}>Character Name</Text>
+          <View style={{ padding: 5 }}>
+            <TextInput
+              mode="outlined"
+              onChangeText={onTypeCharacterName}
+              placeholder="Character Name"
+            />
           </View>
-          <Input
-            onChangeText={onTypeCharacterName}
-            style={{ marginBottom: 10 }} placeholder="Marche"
-          />
           <View style={{ flexDirection: 'row', backgroundColor: '#3D6DCC', padding: 10 }}>
             <Text style={{ color: 'white' }}>Character Role</Text>
           </View>
