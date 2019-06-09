@@ -4,16 +4,18 @@ import {
   GET_GAME_INFORMATION_SUCCESS,
   SAVE_OWNED_GEAR,
   APPLY_FILTERS,
+  TAG_CHARACTER,
   Action,
   FetchAction,
   ErrorAction,
   SaveGearAction,
   ApplyFiltersAction,
+  TagCharacterAction,
 } from './actions'
 import { wrapReducerForPersistance } from './persist'
 import StateProps from '../redux/stateTypes'
 import { Gear, SavedGear } from '../../types/common'
-import { filterGears } from '../repository'
+import { filterGears, addRoleToCharacter } from '../repository'
 
 const R = require('ramda')
 
@@ -102,6 +104,16 @@ const reducer = (state: StateProps = initialState, action: Action) => {
           limitBreakLevel: (action as SaveGearAction).limitBreakLevel,
         },
       ],
+    }
+  case TAG_CHARACTER:
+    const taggedCharacter = addRoleToCharacter(
+      state,
+      (action as TagCharacterAction).role,
+      (action as TagCharacterAction).character
+    )
+    return {
+      ...state,
+      characters: taggedCharacter,
     }
   default:
     return state

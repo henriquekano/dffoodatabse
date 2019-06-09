@@ -29,7 +29,7 @@ declare class TagModal extends React.PureComponent<TagModalProps, any>{}
 declare class IconButton extends React.PureComponent<ThemedIconButtonProps, any>{}
 declare class DragLayout extends React.PureComponent<DragLayoutProps, any>{}
 declare class Veil extends React.PureComponent<VeilProps, any>{}
-declare class DragFlatListTarget extends React.PureComponent<DragFlatListTargetProps, any>{}
+declare class DragFlatListTarget<T> extends React.PureComponent<DragFlatListTargetProps<T>, any>{}
 
 interface GearViewProps {
   limitBreakLevel: number,

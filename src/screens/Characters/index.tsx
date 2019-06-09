@@ -2,6 +2,8 @@ import * as React from 'react'
 import { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import CharactersPresentational from '../../presentational/Characters'
+import { tagCharacter } from '../../redux/actions'
+import { store } from '../../redux/store'
 import { Character } from '../../../types/common'
 
 const R = require('ramda')
@@ -12,6 +14,10 @@ export interface CharactersScreenProps {
 }
 
 class Characters extends PureComponent<CharactersScreenProps> {
+  tagCharacter = (role: string, character: Character) => {
+    store.dispatch(tagCharacter(role, character))
+  }
+
   render = () => {
     const {
       characterRoles,
@@ -21,6 +27,7 @@ class Characters extends PureComponent<CharactersScreenProps> {
       <CharactersPresentational
         characterRoles={characterRoles}
         characters={characters}
+        onTag={this.tagCharacter}
       />
     )
   }

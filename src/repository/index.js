@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import R from 'ramda'
 
 const filterGears = (state) => {
@@ -164,7 +165,27 @@ const calculateGearDistribuitionByRole = (state) => {
   }
 }
 
+const addRoleToCharacter = (state, role, character) => {
+  const characterWithNewRole = R.over(
+    R.lensPath(['profile', 'traits', 'role']),
+    R.concat([role]),
+    character,
+  )
+
+  return R.pipe(
+    R.findIndex(
+      R.propEq('slug', character.slug),
+    ),
+    R.adjust(
+      R.__,
+      R.always(characterWithNewRole),
+      state.characters,
+    ),
+  )(state.characters)
+}
+
 export {
   filterGears,
   calculateGearDistribuitionByRole,
+  addRoleToCharacter,
 }

@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { Gear } from '../../types/common'
+import { Gear, Character } from '../../types/common'
 import { parse, Parsed } from '../scrapper/parser'
 
 const GET_GAME_INFORMATION = 'GET_GAME_INFORMATION'
@@ -8,6 +8,7 @@ const GET_GAME_INFORMATION_FAIL = 'GET_GAME_INFORMATION_FAIL'
 const SAVE_OWNED_GEAR = 'SAVE_OWNED_GEAR'
 const APPLY_FILTERS = 'APPLY_FILTERS'
 const ADD_NAME_FILTER = 'ADD_NAME_FILTER'
+const TAG_CHARACTER = 'TAG_CHARACTER'
 
 export type ActionType = 'GET_GAME_INFORMATION'
   | 'GET_GAME_INFORMATION'
@@ -16,6 +17,7 @@ export type ActionType = 'GET_GAME_INFORMATION'
   | 'SAVE_OWNED_GEAR'
   | 'APPLY_FILTERS'
   | 'ADD_NAME_FILTER'
+  | 'TAG_CHARACTER'
 
 export interface BaseAction {
   type: ActionType
@@ -42,6 +44,11 @@ export interface ErrorAction extends BaseAction {
 export interface SaveGearAction extends BaseAction {
   limitBreakLevel: number,
   gear: Gear,
+}
+
+export interface TagCharacterAction extends BaseAction {
+  role: string,
+  character: Character,
 }
 
 export type Action = BaseAction | RoleAction | FetchAction | ErrorAction | SaveGearAction
@@ -74,6 +81,12 @@ const getGameInformationFail = (err: any): ErrorAction => ({
   err,
 })
 
+const tagCharacter = (role: string, character: Character): TagCharacterAction => ({
+  type: TAG_CHARACTER,
+  role,
+  character,
+})
+
 const saveOwnedGear =
   (
     { limitBreakLevel, gear }:
@@ -102,9 +115,11 @@ export {
   saveOwnedGear,
   fetchFromDissidiadb,
   applyFilters,
+  tagCharacter,
   GET_GAME_INFORMATION,
   GET_GAME_INFORMATION_FAIL,
   GET_GAME_INFORMATION_SUCCESS,
   SAVE_OWNED_GEAR,
   APPLY_FILTERS,
+  TAG_CHARACTER,
 }

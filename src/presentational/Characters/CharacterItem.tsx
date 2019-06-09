@@ -13,37 +13,18 @@ export interface CharacterItemProps {
 }
 
 class CharacterItem extends PureComponent<CharacterItemProps> {
-  state = {
-    draggableIsBeingHoldAbove: false,
-  }
-
   handleDraggableEnteredArea = () => {
-    const { data, isUnderneathDrawer } = this.props
-    this.setState({
-      draggableIsBeingHoldAbove: true,
-    })
   }
 
   handleDraggableLeftArea = () => {
-    const { data, isUnderneathDrawer } = this.props
-    this.setState({
-      draggableIsBeingHoldAbove: false,
-    })
   }
 
   render = () => {
     const { data, isUnderneathDrawer } = this.props
-    const { draggableIsBeingHoldAbove } = this.state
     return  (
-      <Veil conceal={isUnderneathDrawer || draggableIsBeingHoldAbove}>
-        <DragTarget
-          name={data.slug}
-          onEnterArea={this.handleDraggableEnteredArea}
-          onLeaveArea={this.handleDraggableLeftArea}
-          onDrop={console.log}
+      <Veil conceal={isUnderneathDrawer}>
+        <View
           style={{ flexDirection: 'row' }}
-          // this value is related to the draglayout width
-          areaWidthMultiplier={0.5}
         >
           <View style={{ flex: 1, width: null, height: null, minHeight: 60, maxWidth: '100%', maxHeight: '100%' }}>
             <FastImage
@@ -69,7 +50,7 @@ class CharacterItem extends PureComponent<CharacterItemProps> {
               }
             </View>
           </View>
-        </DragTarget>
+        </View>
       </Veil>
     )
   }

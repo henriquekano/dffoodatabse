@@ -173,14 +173,12 @@ class DragFlatListTarget<T> extends PureComponent<DragFlatListTargetProps<T>> {
           // console.log(droppedIndex, this.state, foundCell)
           if (foundCell) {
             const { index } = foundCell
-            if (droppedIndex !== index) {
               this.setState(
                 {
                   droppedIndex: index,
                 }, () =>
                   onDrop && onDrop(gestureResponderEvent, gestureState, value, data[index])
                 )
-            }
           }
         }
       )
