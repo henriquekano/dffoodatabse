@@ -14,6 +14,7 @@ export interface CharactersPresentationalProps {
   characters: Character[],
   characterRoles: string[],
   onTag: (role: string, character: Character) => void,
+  onSelectCharacterRole: (role: string, character: Character) => void,
 }
 
 interface StateProps {
@@ -51,6 +52,14 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
     })
   }
 
+  handleCharacterRoleLongPress = (role: string, character: Character) => {
+    const { onSelectCharacterRole } = this.props
+    onSelectCharacterRole(role, character)
+    this.setState({
+      snackbarMessage: `Role ${role} remove from ${snakeCaseToSpacedCamelCase(character.slug)}`,
+    })
+  }
+
   handleSnackbarDismiss = () => {
     this.setState({
       snackbarMessage: '',
@@ -73,7 +82,7 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
     const {
       characterRoles,
       characters,
-      onTag,
+      onSelectCharacterRole,
     } = this.props
     const {
       drawerOpen,
@@ -94,16 +103,14 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
           renderItem={(
             { item: { data, key }, index, separator, draggableHovering, draggableDropped }
             : DraggableRenderItemInfo
-          ) => {
-            console.log(index, draggableHovering, drawerOpen)
-            return (
-              <CharacterItem
-                isUnderneathDrawer={drawerOpen && !draggableHovering}
-                data={data}
-                key={key}
-              />
-            )
-          }}
+          ) => (
+            <CharacterItem
+              isUnderneathDrawer={drawerOpen && !draggableHovering}
+              data={data}
+              key={key}
+              onLongPress={this.handleCharacterRoleLongPress}
+            />
+          )}
         />
         <Snackbar
           visible={!!snackbarMessage}
@@ -136,9 +143,9 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
               ))
             }
           </View>
-          <View style={{ padding: 5 }}>
+          {/* <View style={{ padding: 5 }}>
             <TextInput mode="outlined" placeholder="New Role"/>
-          </View>
+          </View> */}
         </DragLayout>
       </View>
     )

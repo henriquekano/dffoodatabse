@@ -5,6 +5,7 @@ import {
   SAVE_OWNED_GEAR,
   APPLY_FILTERS,
   TAG_CHARACTER,
+  UNTAG_CHARACTER,
   Action,
   FetchAction,
   ErrorAction,
@@ -15,7 +16,7 @@ import {
 import { wrapReducerForPersistance } from './persist'
 import StateProps from '../redux/stateTypes'
 import { Gear, SavedGear } from '../../types/common'
-import { filterGears, addRoleToCharacter } from '../repository'
+import { filterGears, addRoleToCharacter, removeRoleFromCharacter } from '../repository'
 
 const R = require('ramda')
 
@@ -106,14 +107,22 @@ const reducer = (state: StateProps = initialState, action: Action) => {
       ],
     }
   case TAG_CHARACTER:
-    const taggedCharacter = addRoleToCharacter(
-      state,
-      (action as TagCharacterAction).role,
-      (action as TagCharacterAction).character
-    )
     return {
       ...state,
-      characters: taggedCharacter,
+      characters: addRoleToCharacter(
+        state,
+        (action as TagCharacterAction).role,
+        (action as TagCharacterAction).character
+      ),
+    }
+  case UNTAG_CHARACTER:
+    return {
+      ...state,
+      characters: removeRoleFromCharacter(
+        state,
+        (action as TagCharacterAction).role,
+        (action as TagCharacterAction).character
+      ),
     }
   default:
     return state

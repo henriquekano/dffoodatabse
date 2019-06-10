@@ -105,6 +105,7 @@ class DragLayout extends PureComponent<DragLayoutProps> {
             backgroundColor: 'white',
             borderLeftWidth: StyleSheet.hairlineWidth,
             borderColor: 'lightgrey',
+            flex: 1,
           }}>
             { children }
           </View>

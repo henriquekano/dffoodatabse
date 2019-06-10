@@ -1,9 +1,10 @@
 import * as React from 'react'
-import { TouchableOpacity, ViewStyle, TextStyle, View } from 'react-native'
+import { TouchableOpacity, ViewStyle, TextStyle, View, TouchableOpacityProps, ViewProps } from 'react-native'
 import { Text } from 'react-native-paper'
 
 export interface ChipProps {
   onPress?: () => void,
+  onLongPress?: () => void,
   children: string,
   selected?: boolean,
   style?: ViewStyle,
@@ -18,14 +19,15 @@ const selectedTextStyle = {
 }
 
 const Chip = ({
-  onPress, children, selected, style,
+  onPress, children, selected, style, onLongPress
 }: ChipProps) => {
-  const ContainerComponent = onPress
+  const ContainerComponent = onPress || onLongPress
     ? TouchableOpacity
     : View
   return (
     <ContainerComponent
       onPress={onPress}
+      onLongPress={onLongPress}
       style={[
         { paddingHorizontal: 6, paddingVertical: 4, margin: 5, borderWidth: 1, borderColor: 'grey', borderRadius: 20 },
         style,

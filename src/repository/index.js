@@ -184,8 +184,28 @@ const addRoleToCharacter = (state, role, character) => {
   )(state.characters)
 }
 
+const removeRoleFromCharacter = (state, role, character) => {
+  const characterWithoutRole = R.over(
+    R.lensPath(['profile', 'traits', 'role']),
+    R.reject(R.equals(role)),
+    character,
+  )
+
+  return R.pipe(
+    R.findIndex(
+      R.propEq('slug', character.slug),
+    ),
+    R.adjust(
+      R.__,
+      R.always(characterWithoutRole),
+      state.characters,
+    ),
+  )(state.characters)
+}
+
 export {
   filterGears,
   calculateGearDistribuitionByRole,
   addRoleToCharacter,
+  removeRoleFromCharacter,
 }

@@ -22,3 +22,4 @@ export interface HorizontalBarGraphData {
 declare function filterGears(state: ApplyFilterArgs): Gear[]
 declare function calculateGearDistribuitionByRole(state: Props): HorizontalBarGraphData
 declare function addRoleToCharacter(state: StateProps, role: string, character: Character): Character[]
+declare function removeRoleFromCharacter(state: StateProps, role: string, character: Character): Character[]

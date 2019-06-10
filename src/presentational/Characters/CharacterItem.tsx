@@ -10,6 +10,7 @@ import { snakeCaseToSpacedCamelCase } from '../../data-formatter/string'
 export interface CharacterItemProps {
   data: Character,
   isUnderneathDrawer: boolean,
+  onLongPress: (role: string, character: Character) => void,
 }
 
 class CharacterItem extends PureComponent<CharacterItemProps> {
@@ -20,7 +21,7 @@ class CharacterItem extends PureComponent<CharacterItemProps> {
   }
 
   render = () => {
-    const { data, isUnderneathDrawer } = this.props
+    const { data, isUnderneathDrawer, onLongPress } = this.props
     return  (
       <Veil conceal={isUnderneathDrawer}>
         <View
@@ -43,7 +44,10 @@ class CharacterItem extends PureComponent<CharacterItemProps> {
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', flexWrap: 'wrap' }}>
               {
                 data.profile.traits.role.map((role: string) => (
-                  <Chip key={role}>
+                  <Chip
+                    onLongPress={() => onLongPress(role, data)}
+                    key={role}
+                  >
                     { role }
                   </Chip>
                 ))
