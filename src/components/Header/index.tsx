@@ -15,7 +15,7 @@ const Header = (props: Props): React.ReactNode => {
   } = props
   return (
     <LibHeader
-      centerComponent={{ text: 'Dffoo db', style: { color: '#fff' } }}
+      centerComponent={{ text: 'Dffoo db2', style: { color: '#fff' } }}
       containerStyle={{
         backgroundColor: '#3D6DCC',
         marginTop: ((StatusBar.currentHeight || 0) * -1),

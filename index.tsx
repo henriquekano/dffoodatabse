@@ -7,6 +7,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { store, persistor } from './src/redux/store'
 import Router from './src/react-navigation/index'
 import StorybookUIRoot from './storybook'
+import codePush from 'react-native-code-push'
 import { name as appName } from './app.json'
 import { CacheRetrieve } from './src/screens'
 
@@ -43,7 +44,9 @@ const Application = () => (
 // Storybook...
 let RenderingApp = process.env.application === 'storybook'
   ? StorybookUIRoot
-  : Application
+  : codePush({
+    checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+  })(Application)
 
 
 // eslint-disable-next-line no-undef

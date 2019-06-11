@@ -1,3 +1,4 @@
 <resources>
+	<string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">_2phsRMMZ9y1NFHxYxQ6jpIn-LATB1-il53AE</string>
     <string name="app_name">DffooDatabase</string>
 </resources>
