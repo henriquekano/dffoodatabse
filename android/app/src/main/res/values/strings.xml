@@ -1,4 +1,6 @@
 <resources>
 	<string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">_2phsRMMZ9y1NFHxYxQ6jpIn-LATB1-il53AE</string>
     <string name="app_name">DffooDatabase</string>
+    <string name="appCenterAnalytics_whenToEnableAnalytics" moduleConfig="true" translatable="false">ALWAYS_SEND</string>
+    <string name="appCenterCrashes_whenToSendCrashes" moduleConfig="true" translatable="false">ALWAYS_SEND</string>
 </resources>

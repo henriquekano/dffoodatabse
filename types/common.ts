@@ -136,6 +136,11 @@ export interface SavedGear {
   limitBreakLevel: number,
 }
 
+export interface SavedCharacter {
+  roles: string[],
+  character: Character,
+}
+
 export interface Filters {
   role: Roles,
   name?: string,
