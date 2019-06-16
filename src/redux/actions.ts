@@ -113,7 +113,6 @@ const fetchFromDissidiadb = () => async (dispatch: Dispatch) => {
     const appJsEndpointMatches = mainPageHtml.match(/\/static\/js\/app[^>]+/)
     if (appJsEndpointMatches && appJsEndpointMatches.length > 0) {
       const appJsEndpoint = appJsEndpointMatches[0]
-      console.log(appJsEndpoint)
       const jsResponse = await fetch(`https://dissidiadb.com${appJsEndpoint}`)
       const jsFile = await jsResponse.text()
       dispatch(getGameInformationSuccess(parse(jsFile)))

@@ -84,7 +84,6 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
     const {
       characterRoles,
       characters,
-      onSelectCharacterRole,
       onDrawerPress,
     } = this.props
     const {
@@ -146,9 +145,6 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
               ))
             }
           </View>
-          {/* <View style={{ padding: 5 }}>
-            <TextInput mode="outlined" placeholder="New Role"/>
-          </View> */}
         </DragLayout>
       </View>
     )

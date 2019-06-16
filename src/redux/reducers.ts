@@ -28,6 +28,7 @@ const initialState: StateProps = {
   fetchError: null,
   fetchingGears: false,
   characterRoles: [],
+  savedCharacters: {},
 }
 
 const reducer = (state: StateProps = initialState, action: Action) => {
@@ -107,23 +108,17 @@ const reducer = (state: StateProps = initialState, action: Action) => {
       ],
     }
   case TAG_CHARACTER:
-    return {
-      ...state,
-      characters: addRoleToCharacter(
-        state,
-        (action as TagCharacterAction).role,
-        (action as TagCharacterAction).character
-      ),
-    }
+    return addRoleToCharacter(
+      state,
+      (action as TagCharacterAction).role,
+      (action as TagCharacterAction).character
+    )
   case UNTAG_CHARACTER:
-    return {
-      ...state,
-      characters: removeRoleFromCharacter(
-        state,
-        (action as TagCharacterAction).role,
-        (action as TagCharacterAction).character
-      ),
-    }
+    return removeRoleFromCharacter(
+      state,
+      (action as TagCharacterAction).role,
+      (action as TagCharacterAction).character
+    )
   default:
     return state
   }

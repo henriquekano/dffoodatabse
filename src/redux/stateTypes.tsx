@@ -18,7 +18,9 @@ interface StateProps {
   gears?: Gear[],
   characters?: Character[],
   savedGears: SavedGear[],
-  savedCharacters: SavedCharacter[],
+  savedCharacters: {
+    [slug: string]: SavedCharacter,
+  },
   filteredGears: Gear[],
   fetchError?: any,
   fetchingGears: boolean,

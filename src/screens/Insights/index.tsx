@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { PureComponent } from 'react'
-import { View, TouchableOpacity } from 'react-native'
-import { Icon, Text } from 'react-native-elements'
-import { RouteComponentProps } from 'react-router-native'
+import { View } from 'react-native'
+import { Text } from 'react-native-elements'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 import R from 'ramda'
+import StateProps from '../../redux/stateTypes'
 import { BarGraph, Header } from '../../components'
 import { INSIGHTS } from '../../react-navigation/routes'
 import { Gear, Character, SavedGear } from '../../../types/common'
@@ -43,4 +43,38 @@ class Insights extends PureComponent<Props> {
   }
 }
 
-export default connect(R.identity)(Insights)
+const mergeSavedCharacters = (state: StateProps) => {
+  const { characters, savedCharacters } = state
+  if (characters) {
+    const mergedCharacters = characters.map((character) => {
+      const savedModifiers = savedCharacters[character.slug]
+      if (savedModifiers) {
+        return R.set(
+          R.lensPath(['profile', 'traits', 'role']),
+          savedModifiers.roles,
+          character,
+        )
+      }
+
+      return character
+    })
+
+    return {
+      ...state,
+      characters: mergedCharacters,
+      characterRoles: state.characterRoles,
+    }
+  }
+
+  return {
+    ...state,
+    characters: state.characters,
+    characterRoles: state.characterRoles,
+  }
+}
+
+export default connect(
+  R.pipe(
+    mergeSavedCharacters,
+  )
+)(Insights)

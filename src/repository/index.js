@@ -166,41 +166,61 @@ const calculateGearDistribuitionByRole = (state) => {
 }
 
 const addRoleToCharacter = (state, role, character) => {
-  const characterWithNewRole = R.over(
-    R.lensPath(['profile', 'traits', 'role']),
-    R.concat([role]),
-    character,
+  const characterInitialRoles = R.always(
+    character.profile.traits.role,
   )
+  const characterSavedRoles = R.pathOr([], [
+    'savedCharacters', character.slug, 'roles',
+  ])
+  const newRoles = R.pipe(
+    R.juxt([
+      characterInitialRoles,
+      characterSavedRoles,
+    ]),
+    R.flatten,
+    R.concat([role]),
+    R.uniq,
+  )(state)
 
-  return R.pipe(
-    R.findIndex(
-      R.propEq('slug', character.slug),
-    ),
-    R.adjust(
-      R.__,
-      R.always(characterWithNewRole),
-      state.characters,
-    ),
-  )(state.characters)
+  return {
+    ...state,
+    savedCharacters: {
+      ...state.savedCharacters,
+      [character.slug]: {
+        roles: newRoles,
+        character,
+      },
+    },
+  }
 }
 
 const removeRoleFromCharacter = (state, role, character) => {
-  const characterWithoutRole = R.over(
-    R.lensPath(['profile', 'traits', 'role']),
-    R.reject(R.equals(role)),
-    character,
+  const characterInitialRoles = R.always(
+    character.profile.traits.role,
   )
+  const characterSavedRoles = R.pathOr([], [
+    'savedCharacters', character.slug, 'roles',
+  ])
+  const newRoles = R.pipe(
+    R.juxt([
+      characterInitialRoles,
+      characterSavedRoles,
+    ]),
+    R.flatten,
+    R.reject(R.equals(role)),
+    R.uniq,
+  )(state)
 
-  return R.pipe(
-    R.findIndex(
-      R.propEq('slug', character.slug),
-    ),
-    R.adjust(
-      R.__,
-      R.always(characterWithoutRole),
-      state.characters,
-    ),
-  )(state.characters)
+  return {
+    ...state,
+    savedCharacters: {
+      ...state.savedCharacters,
+      [character.slug]: {
+        roles: newRoles,
+        character,
+      },
+    },
+  }
 }
 
 export {

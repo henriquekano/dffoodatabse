@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import CharactersPresentational from '../../presentational/Characters'
 import { tagCharacter, untagCharacter } from '../../redux/actions'
 import { store } from '../../redux/store'
+import StateProps from '../../redux/stateTypes'
 import { Character } from '../../../types/common'
 
 const R = require('ramda')
@@ -41,9 +42,36 @@ class Characters extends PureComponent<CharactersScreenProps> {
   }
 }
 
+const mergeSavedCharacters = (state: StateProps) => {
+  const { characters, savedCharacters } = state
+  if (characters) {
+    const mergedCharacters = characters.map((character) => {
+      const savedModifiers = savedCharacters[character.slug]
+      if (savedModifiers) {
+        return R.set(
+          R.lensPath(['profile', 'traits', 'role']),
+          savedModifiers.roles,
+          character,
+        )
+      }
+
+      return character
+    })
+
+    return {
+      characters: mergedCharacters,
+      characterRoles: state.characterRoles,
+    }
+  }
+
+  return {
+    characters: state.characters,
+    characterRoles: state.characterRoles,
+  }
+}
+
 export default connect(
-  R.applySpec({
-    characters: R.propOr([], 'characters'),
-    characterRoles: R.propOr([], 'characterRoles'),
-  }),
+  R.pipe(
+    mergeSavedCharacters,
+  ),
 )(Characters)
