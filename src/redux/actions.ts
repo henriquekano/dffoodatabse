@@ -105,17 +105,26 @@ const saveOwnedGear =
     gear,
   })
 
-const fetchFromDissidiadb = () => (dispatch: Dispatch) => {
+const fetchFromDissidiadb = () => async (dispatch: Dispatch) => {
   dispatch(getGameInformation())
-  return fetch('https://dissidiadb.com/static/js/app.1432605e692499762dfa.js')
-    .then(response => response.text())
-    .then(
-      responseTextBody =>
-        dispatch(getGameInformationSuccess(parse(responseTextBody))),
-      err =>
-        dispatch(getGameInformationFail(err)),
-    )
-    .catch(err => dispatch(getGameInformationFail(err)))
+  try {
+    const mainPageResponse = await fetch('https://dissidiadb.com')
+    const mainPageHtml = await mainPageResponse.text()
+    const appJsEndpointMatches = mainPageHtml.match(/\/static\/js\/app[^>]+/)
+    if (appJsEndpointMatches && appJsEndpointMatches.length > 0) {
+      const appJsEndpoint = appJsEndpointMatches[0]
+      console.log(appJsEndpoint)
+      const jsResponse = await fetch(`https://dissidiadb.com${appJsEndpoint}`)
+      const jsFile = await jsResponse.text()
+      dispatch(getGameInformationSuccess(parse(jsFile)))
+      return
+    }
+    dispatch(getGameInformationFail({
+      message: 'Couldn\'t found the resources endpoint',
+    }))
+  } catch (err) {
+    dispatch(getGameInformationFail(err))
+  }
 }
 
 export {
