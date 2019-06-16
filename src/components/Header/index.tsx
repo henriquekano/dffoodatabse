@@ -1,51 +1,24 @@
 import * as React from 'react'
 import { StatusBar, View, TouchableOpacity } from 'react-native'
-import { Header as LibHeader, Icon, HeaderProps } from 'react-native-elements'
+import { Appbar, AppbarProps } from 'react-native-paper'
+import { Icon, HeaderProps } from 'react-native-elements'
 
-export interface Props extends HeaderProps {
-  onChartPress: () => void,
-  onCharacterPress: () => void,
+export interface Props {
+  onDrawerPress: () => void,
+  title: string,
 }
 
 const Header = (props: Props): React.ReactNode => {
   const {
-    onChartPress,
-    onCharacterPress,
+    onDrawerPress,
+    title,
     ...restOfProps
   } = props
   return (
-    <LibHeader
-      centerComponent={{ text: 'Dffoo db2', style: { color: '#fff' } }}
-      containerStyle={{
-        backgroundColor: '#3D6DCC',
-        marginTop: ((StatusBar.currentHeight || 0) * -1),
-      }}
-      rightComponent={(
-        <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity
-            style={{ backgroundColor: 'orange', paddingVertical: 10, paddingHorizontal: 10 }}
-            onPress={onCharacterPress}
-          >
-            <Icon
-              type="material-community"
-              name="alien"
-              color="white"
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ backgroundColor: 'orange', paddingVertical: 10, paddingHorizontal: 10 }}
-            onPress={props.onChartPress}
-          >
-            <Icon
-              type="material-community"
-              name="lightbulb-on-outline"
-              color="white"
-            />
-          </TouchableOpacity>
-        </View>
-      )}
-      {...restOfProps}
-    />
+    <Appbar {...restOfProps}>
+      <Appbar.Action icon="menu" onPress={onDrawerPress}/>
+      <Appbar.Content title={title} />
+    </Appbar>
   )
 }
 

@@ -14,6 +14,7 @@ import {
   IconButton,
 } from '../components/index'
 import { Gear, SavedGear } from '../../types/common'
+import { GEAR_LIST } from '../react-navigation/routes'
 import StateProps from '../redux/stateTypes'
 
 const R = require('ramda')
@@ -222,8 +223,7 @@ const RenderModal = ({
 export interface GearsListPresentationalProps extends StateProps, RenderModalProps, GearListStateProps, RenderGearViewProps {
   onFilterPress: () => void,
   handleSearchBarType: (text: string) => void,
-  onChartPress: () => void,
-  onCharacterPress: () => void,
+  onDrawerPress: () => void,
 }
 
 const GearsListPresentational = ({
@@ -233,8 +233,7 @@ const GearsListPresentational = ({
   filteredGears,
   onFilterPress,
   handleSearchBarType,
-  onChartPress,
-  onCharacterPress,
+  onDrawerPress,
   roleFilter,
   nameFilter,
   savedGears,
@@ -255,10 +254,7 @@ const GearsListPresentational = ({
   const hasResults = filteredGears && filteredGears.length > 0
   return (
     <View style={{ flex: 1 }}>
-      <Header
-        onChartPress={onChartPress}
-        onCharacterPress={onCharacterPress}
-      />
+      <Header onDrawerPress={onDrawerPress} title={GEAR_LIST}/>
       <NetworkStatus />
       {
         fetchError && !gearsLoaded

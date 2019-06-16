@@ -5,6 +5,7 @@ import { Snackbar, TextInput } from 'react-native-paper'
 import { Chip, Header, DraggableView, DragLayout, DragFlatListTarget } from '../../components/index'
 import { DraggableRenderItemInfo } from '../../components/Drag/DragFlatListTarget/index'
 import { Character } from '../../../types/common'
+import { CHARACTERS } from '../../react-navigation/routes'
 import CharacterItem from './CharacterItem'
 import { snakeCaseToSpacedCamelCase } from '../../data-formatter/string'
 
@@ -15,6 +16,7 @@ export interface CharactersPresentationalProps {
   characterRoles: string[],
   onTag: (role: string, character: Character) => void,
   onSelectCharacterRole: (role: string, character: Character) => void,
+  onDrawerPress: () => void,
 }
 
 interface StateProps {
@@ -83,6 +85,7 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
       characterRoles,
       characters,
       onSelectCharacterRole,
+      onDrawerPress,
     } = this.props
     const {
       drawerOpen,
@@ -90,7 +93,7 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
     } = this.state
     return (
       <View style={{ flex: 1 }}>
-        <Header />
+        <Header onDrawerPress={onDrawerPress} title={CHARACTERS}/>
         <DragFlatListTarget
           keyExtractor={item => item.key}
           nameExtractor={item => item.key}

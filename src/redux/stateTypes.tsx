@@ -1,4 +1,4 @@
-import { Character, Filters, Gear, SavedGear } from '../../types/common'
+import { Character, Filters, Gear, SavedGear, SavedCharacter } from '../../types/common'
 
 enum Role {
   MELEE = "MELEE",
@@ -18,6 +18,7 @@ interface StateProps {
   gears?: Gear[],
   characters?: Character[],
   savedGears: SavedGear[],
+  savedCharacters: SavedCharacter[],
   filteredGears: Gear[],
   fetchError?: any,
   fetchingGears: boolean,

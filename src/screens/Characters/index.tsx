@@ -11,6 +11,7 @@ const R = require('ramda')
 export interface CharactersScreenProps {
   characters: Character[],
   characterRoles: string[],
+  navigation: any,
 }
 
 class Characters extends PureComponent<CharactersScreenProps> {
@@ -26,6 +27,7 @@ class Characters extends PureComponent<CharactersScreenProps> {
     const {
       characterRoles,
       characters,
+      navigation,
     } = this.props
     return (
       <CharactersPresentational
@@ -33,6 +35,7 @@ class Characters extends PureComponent<CharactersScreenProps> {
         characters={characters}
         onTag={this.tagCharacter}
         onSelectCharacterRole={this.untagCharacter}
+        onDrawerPress={() => navigation.openDrawer()}
       />
     )
   }

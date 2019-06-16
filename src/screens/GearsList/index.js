@@ -55,22 +55,6 @@ class GearList extends PureComponent {
     })
   }
 
-  handleChartPress = () => {
-    const { navigation } = this.props
-    // eslint-disable-next-line no-undef
-    requestAnimationFrame(() => {
-      navigation.navigate(INSIGHTS)
-    })
-  }
-
-  handleCharacterPress = () => {
-    const { navigation } = this.props
-    // eslint-disable-next-line no-undef
-    requestAnimationFrame(() => {
-      navigation.navigate(CHARACTERS)
-    })
-  }
-
   handleNameFilterType = (name) => {
     this.setState({
       nameFilter: name,
@@ -140,6 +124,7 @@ class GearList extends PureComponent {
       filteredGears,
       characterRoles,
       savedGears,
+      navigation,
     } = this.props
     const {
       filterOpen,
@@ -156,10 +141,9 @@ class GearList extends PureComponent {
         filteredGears={filteredGears}
         handleSearchBarType={_.debounce(this.handleSearchBarType, 500)}
         onFilterPress={this.handleOpenFilter}
-        onChartPress={this.handleChartPress}
-        onCharacterPress={this.handleCharacterPress}
         roleFilter={roleFilter}
         nameFilter={nameFilter}
+        onDrawerPress={() => navigation.openDrawer()}
         // modal props
         filterOpen={filterOpen}
         characterRoles={characterRoles}

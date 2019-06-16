@@ -7,6 +7,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 import R from 'ramda'
 import { BarGraph, Header } from '../../components'
+import { INSIGHTS } from '../../react-navigation/routes'
 import { Gear, Character, SavedGear } from '../../../types/common'
 
 export interface Props extends NavigationScreenProps {
@@ -27,20 +28,7 @@ class Insights extends PureComponent<Props> {
     } = this.props
     return (
       <View style={{ flex: 1, justifyContent: 'center' }}>
-        <Header
-          leftComponent={(
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack()
-              }}
-            >
-              <Icon
-                name="arrow-back"
-                color="white"
-              />
-            </TouchableOpacity>
-          )}
-        />
+        <Header title={INSIGHTS} onDrawerPress={() => navigation.openDrawer()}/>
         <Text style={{ textAlign: 'center' }}>
           Character Roles VS owned gears
         </Text>
