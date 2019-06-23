@@ -1,12 +1,13 @@
 import * as React from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { View, ImageBackground, Image, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import Timeline from 'react-native-timeline-listview'
 import FastImage from 'react-native-fast-image'
-import { Text } from 'react-native-paper'
+import { Text, Searchbar } from 'react-native-paper'
 import R from 'ramda'
+import _ from 'lodash'
 import { fetchBannerInformation } from '../../redux/actions'
 import StateProps from '../../redux/stateTypes'
 import { Banner } from '../../../types/common'
@@ -33,13 +34,13 @@ const TimelineItem = ({
         style={{ position: 'absolute', top: '50%', left: '50%', right: '50%', bottom: '50%', zIndex: 0 }}
       />
     </View>
-    {
+    {/* {
       rowData.characters.map((character, index) => (
         <Text key={character + index}>
           { character }
         </Text>
       ))
-    }
+    } */}
   </View>
 )
 
@@ -49,21 +50,49 @@ const Banners = ({
   banners,
   fetchBannerInformation,
 }) => {
+  const [characterNameFilter, setCharacterNameFilter] = useState('')
+  const [filteredBanners, setFilteredBanners] = useState(banners)
+
   const componentDidMount = () => {
     useEffect(() => {
       fetchBannerInformation()
     }, [])
   }
 
+  const applyFiltersToBanners = () => {
+    const newFilteredBanners = R.filter(
+      R.pipe(
+        R.prop('characters'),
+        R.map(R.pipe(
+          R.toLower,
+          R.replace(/\W/g, ''),
+        )),
+        R.any(R.contains(R.toLower(characterNameFilter)))
+      )
+    )(banners)
+    setFilteredBanners(newFilteredBanners)
+  }
+
   const bannersChangedEffect = () => {
     useEffect(() => {
-      console.log(banners)
+      if (characterNameFilter) {
+        applyFiltersToBanners()
+      } else {
+        setFilteredBanners(banners)
+      }
     }, [banners])
+  }
+
+  const characterNameFilterChanged = () => {
+    useEffect(() => {
+      applyFiltersToBanners()
+    }, [characterNameFilter])
   }
 
   [
     componentDidMount,
     bannersChangedEffect,
+    characterNameFilterChanged,
   ].forEach(fn => fn())
 
   return (
@@ -80,7 +109,10 @@ const Banners = ({
             <TimelineItem rowData={rowData}/>
           )
         }}
-        data={banners || []}
+        data={filteredBanners || []}
+      />
+      <Searchbar
+        onChangeText={_.debounce(setCharacterNameFilter, 350)}
       />
     </View>
   )
@@ -125,7 +157,7 @@ const mergeRelatedCharacterForEachBanner = (store: StateProps) => {
     })
     return {
       ...store,
-      banners: constructNewBanners(store.banners),
+      banners: R.reverse(constructNewBanners(store.banners))
     }
   }
 
