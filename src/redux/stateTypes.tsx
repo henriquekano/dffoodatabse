@@ -1,4 +1,4 @@
-import { Character, Filters, Gear, SavedGear, SavedCharacter } from '../../types/common'
+import { Character, Filters, Gear, SavedGear, SavedCharacter, Banner } from '../../types/common'
 
 enum Role {
   MELEE = "MELEE",
@@ -25,6 +25,10 @@ interface StateProps {
   fetchError?: any,
   fetchingGears: boolean,
   characterRoles: string[],
+  // banner stuff
+  fetchingBanners: boolean,
+  fethingBannersError: any,
+  banners?: Banner[],
 }
 
 export default StateProps

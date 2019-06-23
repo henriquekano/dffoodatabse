@@ -7,8 +7,8 @@ import {
   NavigationRoute,
 } from "react-navigation"
 import Analytics from 'appcenter-analytics'
-import { GearList, Insights, Characters } from '../screens'
-import { CHARACTERS, GEAR_LIST, INSIGHTS } from './routes'
+import { GearList, Insights, Characters, Banners } from '../screens'
+import { CHARACTERS, GEAR_LIST, INSIGHTS, BANNERS } from './routes'
 
 const AppNavigator = createDrawerNavigator(
   {
@@ -24,8 +24,11 @@ const AppNavigator = createDrawerNavigator(
       path: CHARACTERS,
       screen: Characters,
     },
+    [BANNERS]: {
+      screen: Banners,
+    },
   }, {
-    initialRouteName: GEAR_LIST,
+    initialRouteName: BANNERS,
   }
 )
 

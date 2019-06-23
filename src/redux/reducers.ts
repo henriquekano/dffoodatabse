@@ -2,16 +2,20 @@ import {
   GET_GAME_INFORMATION,
   GET_GAME_INFORMATION_FAIL,
   GET_GAME_INFORMATION_SUCCESS,
+  GET_BANNER_INFORMATION,
+  GET_BANNER_INFORMATION_SUCCESS,
+  GET_BANNER_INFORMATION_FAIL,
   SAVE_OWNED_GEAR,
   APPLY_FILTERS,
   TAG_CHARACTER,
   UNTAG_CHARACTER,
   Action,
-  FetchAction,
+  DffooDbFetchAction,
   ErrorAction,
   SaveGearAction,
   ApplyFiltersAction,
   TagCharacterAction,
+  AltemaFetchAction,
 } from './actions'
 import { wrapReducerForPersistance } from './persist'
 import StateProps from '../redux/stateTypes'
@@ -29,6 +33,10 @@ const initialState: StateProps = {
   fetchingGears: false,
   characterRoles: [],
   savedCharacters: {},
+  // banner stuff
+  fetchingBanners: false,
+  fethingBannersError: null,
+  banners: undefined,
 }
 
 const reducer = (state: StateProps = initialState, action: Action) => {
@@ -57,7 +65,7 @@ const reducer = (state: StateProps = initialState, action: Action) => {
       gears,
       characters,
       characterRoles,
-    } = (action as FetchAction).payload
+    } = (action as DffooDbFetchAction).payload
     // eslint-disable-next-line no-case-declarations
     const gearsDidntChange = (state.gears && state.gears.length)
       === (gears && gears.length)
@@ -79,6 +87,23 @@ const reducer = (state: StateProps = initialState, action: Action) => {
     return {
       ...state,
       fetchingGears: false,
+      fethingError: (action as ErrorAction).err,
+    }
+  case GET_BANNER_INFORMATION:
+    return {
+      ...state,
+      fetchingBanners: true,
+    }
+  case GET_BANNER_INFORMATION_SUCCESS:
+    return {
+      ...state,
+      fetchingBanners: false,
+      banners: (action as AltemaFetchAction).payload.banners,
+    }
+  case GET_BANNER_INFORMATION_FAIL:
+    return {
+      ...state,
+      fetchingBanners: false,
       fethingError: (action as ErrorAction).err,
     }
   case SAVE_OWNED_GEAR:

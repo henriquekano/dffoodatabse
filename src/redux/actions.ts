@@ -1,6 +1,10 @@
 import { Dispatch } from 'redux'
 import { Gear, Character } from '../../types/common'
-import { parse, Parsed } from '../scrapper/parser'
+import { parse, Parsed as ParsedDffooDb } from '../scrapper/parser'
+import {
+  parse as parseBannerInformation,
+  Parsed as ParsedAltema,
+} from '../scrapper/parser/altema'
 
 const GET_GAME_INFORMATION = 'GET_GAME_INFORMATION'
 const GET_GAME_INFORMATION_SUCCESS = 'GET_GAME_INFORMATION_SUCCESS'
@@ -10,6 +14,9 @@ const APPLY_FILTERS = 'APPLY_FILTERS'
 const ADD_NAME_FILTER = 'ADD_NAME_FILTER'
 const TAG_CHARACTER = 'TAG_CHARACTER'
 const UNTAG_CHARACTER = 'UNTAG_CHARACTER'
+const GET_BANNER_INFORMATION = 'GET_BANNER_INFORMATION'
+const GET_BANNER_INFORMATION_SUCCESS = 'GET_BANNER_INFORMATION_SUCCESS'
+const GET_BANNER_INFORMATION_FAIL = 'GET_BANNER_INFORMATION_FAIL'
 
 export type ActionType = 'GET_GAME_INFORMATION'
   | 'GET_GAME_INFORMATION'
@@ -20,6 +27,9 @@ export type ActionType = 'GET_GAME_INFORMATION'
   | 'ADD_NAME_FILTER'
   | 'TAG_CHARACTER'
   | 'UNTAG_CHARACTER'
+  | 'GET_BANNER_INFORMATION'
+  | 'GET_BANNER_INFORMATION_SUCCESS'
+  | 'GET_BANNER_INFORMATION_FAIL'
 
 export interface BaseAction {
   type: ActionType
@@ -35,8 +45,14 @@ export interface ApplyFiltersAction extends BaseAction {
   gearNameFilter: string,
 }
 
-export interface FetchAction extends BaseAction {
-  payload: Parsed,
+export interface DffooDbFetchAction extends BaseAction {
+  payload: ParsedDffooDb,
+}
+
+export interface AltemaFetchAction extends BaseAction {
+  payload: {
+    banners: ParsedAltema,
+  },
 }
 
 export interface ErrorAction extends BaseAction {
@@ -53,7 +69,7 @@ export interface TagCharacterAction extends BaseAction {
   character: Character,
 }
 
-export type Action = BaseAction | RoleAction | FetchAction | ErrorAction | SaveGearAction
+export type Action = BaseAction | RoleAction | DffooDbFetchAction | ErrorAction | SaveGearAction | AltemaFetchAction
 
 export interface ApplyFilterArgs {
   characterNameFilter: string,
@@ -73,13 +89,27 @@ const getGameInformation = (): BaseAction => ({
   type: GET_GAME_INFORMATION,
 })
 
-const getGameInformationSuccess = (payload: Parsed): FetchAction => ({
+const getGameInformationSuccess = (payload: ParsedDffooDb): DffooDbFetchAction => ({
   type: GET_GAME_INFORMATION_SUCCESS,
   payload,
 })
 
 const getGameInformationFail = (err: any): ErrorAction => ({
   type: GET_GAME_INFORMATION_FAIL,
+  err,
+})
+
+const getBannerInformation = (): BaseAction => ({
+  type: GET_BANNER_INFORMATION,
+})
+
+const getBannerInformationSuccess = (payload: ParsedAltema): AltemaFetchAction => ({
+  type: GET_BANNER_INFORMATION_SUCCESS,
+  payload,
+})
+
+const getBannerInformationFail = (err: any): ErrorAction => ({
+  type: GET_BANNER_INFORMATION_FAIL,
   err,
 })
 
@@ -126,16 +156,38 @@ const fetchFromDissidiadb = () => async (dispatch: Dispatch) => {
   }
 }
 
+const fetchBannerInformation = () => (dispatch: Dispatch) => {
+  dispatch(getBannerInformation())
+  return Promise.all([
+    fetchFromDissidiadb()(dispatch),
+    fetch('https://altema.jp/dffoo/gachamemorialhall-2-7012'),
+  ])
+    .then(
+      ([,mainPageResponse]) => mainPageResponse.text(),
+      err => dispatch(getBannerInformationFail(err))
+    )
+    .then(
+      mainPageHtml =>
+        dispatch(getBannerInformationSuccess({
+          banners: parseBannerInformation(mainPageHtml),
+        }))
+    )
+    .catch(err => dispatch(getBannerInformationFail(err)))
+}
+
 export {
-  getGameInformation,
   saveOwnedGear,
   fetchFromDissidiadb,
+  fetchBannerInformation,
   applyFilters,
   tagCharacter,
   untagCharacter,
   GET_GAME_INFORMATION,
   GET_GAME_INFORMATION_FAIL,
   GET_GAME_INFORMATION_SUCCESS,
+  GET_BANNER_INFORMATION,
+  GET_BANNER_INFORMATION_SUCCESS,
+  GET_BANNER_INFORMATION_FAIL,
   SAVE_OWNED_GEAR,
   APPLY_FILTERS,
   TAG_CHARACTER,

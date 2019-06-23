@@ -146,4 +146,11 @@ export interface Filters {
   name?: string,
 }
 
+export interface Banner {
+  image: string,
+  gears: string[],
+  year: number,
+  quarter: number,
+}
+
 type Roles = string[]
