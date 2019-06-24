@@ -35,7 +35,7 @@ const initialState: StateProps = {
   savedCharacters: {},
   // banner stuff
   fetchingBanners: false,
-  fethingBannersError: null,
+  fetchingBannersError: null,
   banners: undefined,
 }
 
@@ -93,6 +93,7 @@ const reducer = (state: StateProps = initialState, action: Action) => {
     return {
       ...state,
       fetchingBanners: true,
+      fetchingBannersError: null,
     }
   case GET_BANNER_INFORMATION_SUCCESS:
     return {
@@ -104,7 +105,7 @@ const reducer = (state: StateProps = initialState, action: Action) => {
     return {
       ...state,
       fetchingBanners: false,
-      fethingError: (action as ErrorAction).err,
+      fetchingBannersError: (action as ErrorAction).err,
     }
   case SAVE_OWNED_GEAR:
     // eslint-disable-next-line no-case-declarations

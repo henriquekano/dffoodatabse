@@ -164,7 +164,7 @@ const fetchBannerInformation = () => (dispatch: Dispatch) => {
   ])
     .then(
       ([,mainPageResponse]) => mainPageResponse.text(),
-      err => dispatch(getBannerInformationFail(err))
+      err => dispatch(getBannerInformationFail(err.message))
     )
     .then(
       mainPageHtml =>
@@ -172,7 +172,7 @@ const fetchBannerInformation = () => (dispatch: Dispatch) => {
           banners: parseBannerInformation(mainPageHtml),
         }))
     )
-    .catch(err => dispatch(getBannerInformationFail(err)))
+    .catch(() => {})
 }
 
 export {

@@ -27,7 +27,7 @@ interface StateProps {
   characterRoles: string[],
   // banner stuff
   fetchingBanners: boolean,
-  fethingBannersError: any,
+  fetchingBannersError: any,
   banners?: Banner[],
 }
 
