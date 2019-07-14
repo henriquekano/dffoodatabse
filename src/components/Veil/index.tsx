@@ -1,9 +1,10 @@
 import * as React from 'react'
 import { PureComponent } from 'react'
-import { View, ViewProps, LayoutChangeEvent } from 'react-native'
+import { View, ViewProps, LayoutChangeEvent, ViewStyle, } from 'react-native'
 
 export interface VeilProps extends ViewProps {
   conceal: boolean,
+  style?: ViewStyle,
 }
 
 interface StateType {
@@ -26,7 +27,7 @@ export default class Veil extends PureComponent<VeilProps> {
   }
 
   render = () => {
-    const { children, conceal, ...rest } = this.props
+    const { children, conceal, style, ...rest } = this.props
     const { height, width, x, y } = this.state
     return (
       <View
@@ -42,14 +43,17 @@ export default class Veil extends PureComponent<VeilProps> {
           conceal
             ? (
               <View
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: width,
-                  height: height,
-                  backgroundColor: 'rgba(128, 128, 128, 0.5)'
-                }}
+                style={[
+                  {
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: width,
+                    height: height,
+                    backgroundColor: 'rgba(128, 128, 128, 0.5)'
+                  },
+                  style,
+                ]}
               />
             )
             : null

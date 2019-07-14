@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "adb reverse tcp:8081 tcp:8081 && application=app react-native start --reset-cache",
+    "start": "application=app react-native start --reset-cache",
     "test": "jest",
     "prestorybook": "rnstl",
     "storybook": "yarn prestorybook && ./node_modules/.bin/concurrently \"./node_modules/.bin/storybook\" \"application=storybook ./node_modules/.bin/react-native start --reset-cache\""
@@ -31,7 +31,7 @@
     "react-native-paper": "^2.15.2",
     "react-native-svg": "^9.4.0",
     "react-native-svg-charts": "^5.2.0",
-    "react-native-timeline-feed": "1.0.1",
+    "react-native-timeline-flatlist": "0.3.1",
     "react-native-vector-icons": "~6.4.2",
     "react-navigation": "^3.11.0",
     "react-redux": "~7.0.3",

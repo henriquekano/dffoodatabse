@@ -10366,10 +10366,10 @@ react-native-tab-view@^1.2.0, react-native-tab-view@^1.4.1:
   dependencies:
     prop-types "^15.6.1"
 
-react-native-timeline-feed@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-timeline-feed/-/react-native-timeline-feed-1.0.1.tgz#564b5f68798282e837f5fde61e66e16980cce397"
-  integrity sha512-M5027tP7lb48calaWZOZ8E0SAttU5sPaLoDOC4w3bYiWmUqlbh47awrBeGKwyOeE8ggy+j+KXrtCyA65HQzlxA==
+react-native-timeline-flatlist@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-timeline-flatlist/-/react-native-timeline-flatlist-0.3.1.tgz#92fd24d74a1e459e06ab0f0388e390ad3d53c12c"
+  integrity sha512-UlOaZ3RSHMlDbIAtRoiAFKJqkcwUpxB4A9LDdbGeINpRqXCsD8iMGGU3a09I9dCmfCnpBt54CnWQF+Ukim/nzQ==
 
 react-native-vector-icons@~6.4.2:
   version "6.4.2"

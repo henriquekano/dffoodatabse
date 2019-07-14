@@ -153,4 +153,21 @@ export interface Banner {
   quarter: number,
 }
 
+/**
+ * Passive acquired by level
+ */
+export interface NaturalPassiveAbility {
+  name: {
+    en: string,
+    jp: string,
+    gl?: string,
+  },
+  type: string,
+  cost: number,
+  level: number,
+  description: string,
+  character_slug: string,
+  globalDescription?: string,
+}
+
 type Roles = string[]

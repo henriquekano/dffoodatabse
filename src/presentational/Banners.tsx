@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { View, ActivityIndicator, Image } from 'react-native'
-import Timeline from 'react-native-timeline-feed'
+import { PureComponent } from 'react'
+import { View, ActivityIndicator } from 'react-native'
+import Timeline from 'react-native-timeline-flatlist'
 import FastImage from 'react-native-fast-image'
 import { Text, Searchbar, Button } from 'react-native-paper'
 import R from 'ramda'
@@ -16,25 +17,28 @@ interface TimelineItemProps {
   rowData: BannerWithCharacters,
 }
 
-const TimelineItem = ({
-  rowData,
-}: TimelineItemProps) => (
-  <View style={{ width: '100%', alignContent: 'flex-start' }}>
-    <View style={{ flex: 1, maxWidth: '100%', justifyContent: 'flex-start', backgroundColor: 'lightgrey' }}>
-      <FastImage
-        style={{ flex: 1, width: '100%', minHeight: 100, aspectRatio: 844 / 387, zIndex: 2 }}
-        source={{
-          uri: rowData.image,
-          priority: FastImage.priority.normal,
-        }}
-        resizeMode={FastImage.resizeMode.contain}
-      />
-      <ActivityIndicator
-        style={{ position: 'absolute', top: '50%', left: '50%', right: '50%', bottom: '50%', zIndex: 0 }}
-      />
-    </View>
-  </View>
-)
+class TimelineItem extends PureComponent<TimelineItemProps> {
+  render = () => {
+    const { rowData } = this.props
+    return (
+      <View style={{ width: '100%', alignContent: 'flex-start' }}>
+        <View style={{ flex: 1, maxWidth: '100%', justifyContent: 'flex-start', backgroundColor: 'lightgrey' }}>
+          <FastImage
+            style={{ flex: 1, width: '100%', minHeight: 100, aspectRatio: 844 / 387, zIndex: 2 }}
+            source={{
+              uri: rowData.image,
+              priority: FastImage.priority.normal,
+            }}
+            resizeMode={FastImage.resizeMode.contain}
+          />
+          <ActivityIndicator
+            style={{ position: 'absolute', top: '50%', left: '50%', right: '50%', bottom: '50%', zIndex: 0 }}
+          />
+        </View>
+      </View>
+    )
+  }
+}
 
 const ErrorState = ({
   error,
@@ -87,9 +91,13 @@ const BannerListState = ({
       lineColor='rgb(45,156,219)'
       timeContainerStyle={{ minWidth:52 }}
       options={{
-        style:{ paddingTop:5 }
+        style:{ paddingTop:5 },
+        keyExtractor: (item: BannerWithCharacters) =>
+          item.image + item.year + item.quarter,
+        initialNumToRender: 5,
       }}
-      renderDetail={({ item }: { item: BannerWithCharacters }) => {
+      renderDetail={(item: BannerWithCharacters) => {
+        console.log(item)
         return (
           <TimelineItem
             key={item.image}
@@ -98,10 +106,6 @@ const BannerListState = ({
         )
       }}
       data={bannerList}
-      flatListProps={{
-        keyExtractor: (item: BannerWithCharacters) =>
-          item.image + item.year + item.quarter
-      }}
     />
     <Searchbar onChangeText={onCharacterTextChange}/>
   </View>

@@ -14,7 +14,9 @@ import { Props as TagModalProps } from './TagModal/index'
 import { VeilProps } from './Veil/index'
 import { PublicInterface as ThemedIconButtonProps } from './react-native-paper-themed/IconButton'
 import { Gear } from '../../types/common'
+import { ModalProps } from './Modal/index'
 
+declare class Modal extends React.PureComponent<ModalProps, any> {}
 declare class DevDrawer extends React.PureComponent<any, any> {}
 declare class NetworkStatus extends React.PureComponent<any, any> {}
 declare class BarGraph extends React.PureComponent<BarGraphProps, any>{}

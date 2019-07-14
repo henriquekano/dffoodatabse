@@ -10,6 +10,7 @@ import {
   GestureResponderEvent,
   PanResponderGestureState,
   ListRenderItemInfo,
+  ViewStyle,
 } from 'react-native'
 import { Subject, interval } from 'rxjs'
 import { throttle } from 'rxjs/operators'
@@ -129,6 +130,7 @@ export interface DragFlatListTargetProps<T> {
   dragAreaYOffset?: number,
   dragAreaWidthMultiplier?: number,
   dragAreaHeightMultiplier?: number,
+  style?: ViewStyle,
 }
 
 class DragFlatListTarget<T> extends PureComponent<DragFlatListTargetProps<T>> {

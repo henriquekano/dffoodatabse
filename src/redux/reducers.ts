@@ -37,6 +37,7 @@ const initialState: StateProps = {
   fetchingBanners: false,
   fetchingBannersError: null,
   banners: undefined,
+  naturalPassiveAbilities: [],
 }
 
 const reducer = (state: StateProps = initialState, action: Action) => {
@@ -65,16 +66,8 @@ const reducer = (state: StateProps = initialState, action: Action) => {
       gears,
       characters,
       characterRoles,
+      naturalPassiveAbilities,
     } = (action as DffooDbFetchAction).payload
-    // eslint-disable-next-line no-case-declarations
-    const gearsDidntChange = (state.gears && state.gears.length)
-      === (gears && gears.length)
-    if (gearsDidntChange) {
-      return {
-        ...state,
-        fetchingGears: false,
-      }
-    }
     return {
       ...state,
       fetchingGears: false,
@@ -82,6 +75,7 @@ const reducer = (state: StateProps = initialState, action: Action) => {
       filteredGears: gears,
       characters,
       characterRoles,
+      naturalPassiveAbilities,
     }
   case GET_GAME_INFORMATION_FAIL:
     return {

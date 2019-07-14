@@ -4,6 +4,17 @@ import R from 'ramda'
 // eslint-disable-next-line no-unused-vars
 const webpackJsonp = (...args) => args[1]
 
+const _getMinifiedDataKey = (evaledJsFile, key) => {
+  const secondParameter = evaledJsFile
+  const keyFunction = secondParameter[key]
+
+  const e = {}
+  const t = {}
+  keyFunction(e, t)
+
+  return e.exports
+}
+
 const _getRawGears = (evaledJsFile) => {
   const secondParameter = evaledJsFile
   const gearsFunction = secondParameter.pZ10
@@ -152,6 +163,24 @@ const _getGears = (jsFile) => {
   })
 }
 
+const deIndexCharacterSlug = R.pipe(
+  R.toPairs,
+  R.map(([slug, properties]) => R.map(
+    R.set(R.lensProp('character_slug'), slug),
+  )(properties)),
+  R.flatten,
+)
+
+const _getPassiveAbilities = R.pipe(
+  _getMinifiedDataKey(R.__, '1JuO'),
+  deIndexCharacterSlug,
+)
+
+const _getCommandAbilities = R.pipe(
+  _getMinifiedDataKey(R.__, 'ICfV'),
+  deIndexCharacterSlug,
+)
+
 const parse = (jsFile) => {
   const evaledFile = eval(jsFile)
 
@@ -167,6 +196,8 @@ const parse = (jsFile) => {
     gears: _getGears(evaledFile),
     characters,
     characterRoles,
+    naturalPassiveAbilities: _getPassiveAbilities(evaledFile),
+    commandAbilities: _getCommandAbilities(evaledFile),
   }
 }
 

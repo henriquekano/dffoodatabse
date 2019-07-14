@@ -11,6 +11,8 @@ const parse = (html) => {
     const year = timeFrame.match(/\d{4}/)[0]
     const lastMonth = parseInt(timeFrame.match(/～(\d+)/)[0].replace(/\D/g, '') || -1)
     const bannerImage = $(el).find('td a [data-lazy-src]').attr('data-lazy-src')
+      || $(el).find('[src^="https://img.altema.jp/dffoo/uploads"]')
+        .attr('src')
     const weaponList = $(this).find('td > ul').map(function () {
       return $(this).find('li').map(function (__index, el) {
         return $(el).text()

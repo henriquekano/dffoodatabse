@@ -1,19 +1,26 @@
 import * as React from 'react'
 import { PureComponent } from 'react'
-import { View, ScrollView } from 'react-native'
-import { Snackbar, TextInput } from 'react-native-paper'
-import { Chip, Header, DraggableView, DragLayout, DragFlatListTarget } from '../../components/index'
+import { View } from 'react-native'
+import { Snackbar } from 'react-native-paper'
+import R from 'ramda'
+import {
+  Chip,
+  Header,
+  DraggableView,
+  DragLayout,
+  DragFlatListTarget,
+} from '../../components/index'
 import { DraggableRenderItemInfo } from '../../components/Drag/DragFlatListTarget/index'
-import { Character } from '../../../types/common'
+import { Character, NaturalPassiveAbility } from '../../../types/common'
 import { CHARACTERS } from '../../react-navigation/routes'
 import CharacterItem from './CharacterItem'
+import CharacterInformation from './CharacterInformation'
 import { snakeCaseToSpacedCamelCase } from '../../data-formatter/string'
-
-const R = require('ramda')
 
 export interface CharactersPresentationalProps {
   characters: Character[],
   characterRoles: string[],
+  naturalPassiveAbilities: NaturalPassiveAbility[],
   onTag: (role: string, character: Character) => void,
   onSelectCharacterRole: (role: string, character: Character) => void,
   onDrawerPress: () => void,
@@ -28,6 +35,8 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
   state = {
     drawerOpen: false,
     snackbarMessage: '',
+    characterInformationIsOpen: false,
+    selectedCharacterNaturalAbilities: [],
   }
 
   formatCharactersToFlatList = (): [{ data: Character, key: string }] => {
@@ -80,6 +89,28 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
     })
   }
 
+  handleCharacterPress = (character: Character) => {
+    const { naturalPassiveAbilities } = this.props
+    console.log(character)
+    const selectedCharacterNaturalAbilities = R.pipe(
+      R.filter(
+        R.propEq('character_slug', character.slug)
+      ),
+      R.sortBy(R.prop('level')),
+    )(naturalPassiveAbilities)
+
+    this.setState({
+      characterInformationIsOpen: true,
+      selectedCharacterNaturalAbilities,
+    })
+  }
+
+  handleCloseCharacterInformation = () => {
+    this.setState({
+      characterInformationIsOpen: false,
+    })
+  }
+
   render = () => {
     const {
       characterRoles,
@@ -89,6 +120,8 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
     const {
       drawerOpen,
       snackbarMessage,
+      characterInformationIsOpen,
+      selectedCharacterNaturalAbilities,
     } = this.state
     return (
       <View style={{ flex: 1 }}>
@@ -111,6 +144,7 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
               data={data}
               key={key}
               onLongPress={this.handleCharacterRoleLongPress}
+              onPress={this.handleCharacterPress}
             />
           )}
         />
@@ -146,6 +180,11 @@ class CharactersPresentational extends PureComponent<CharactersPresentationalPro
             }
           </View>
         </DragLayout>
+        <CharacterInformation
+          naturalPassiveAbilities={selectedCharacterNaturalAbilities}
+          isOpen={characterInformationIsOpen}
+          onClose={this.handleCloseCharacterInformation}
+        />
       </View>
     )
   }

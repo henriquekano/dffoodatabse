@@ -5,13 +5,14 @@ import CharactersPresentational from '../../presentational/Characters'
 import { tagCharacter, untagCharacter } from '../../redux/actions'
 import { store } from '../../redux/store'
 import StateProps from '../../redux/stateTypes'
-import { Character } from '../../../types/common'
+import { Character, NaturalPassiveAbility } from '../../../types/common'
 
 const R = require('ramda')
 
 export interface CharactersScreenProps {
   characters: Character[],
   characterRoles: string[],
+  naturalPassiveAbilities: NaturalPassiveAbility[],
   navigation: any,
 }
 
@@ -29,9 +30,11 @@ class Characters extends PureComponent<CharactersScreenProps> {
       characterRoles,
       characters,
       navigation,
+      naturalPassiveAbilities,
     } = this.props
     return (
       <CharactersPresentational
+        naturalPassiveAbilities={naturalPassiveAbilities}
         characterRoles={characterRoles}
         characters={characters}
         onTag={this.tagCharacter}
@@ -59,19 +62,24 @@ const mergeSavedCharacters = (state: StateProps) => {
     })
 
     return {
+      ...state,
       characters: mergedCharacters,
-      characterRoles: state.characterRoles,
     }
   }
 
   return {
+    ...state,
     characters: state.characters,
-    characterRoles: state.characterRoles,
   }
 }
 
 export default connect(
   R.pipe(
     mergeSavedCharacters,
+    R.pick([
+      'characterRoles',
+      'characters',
+      'naturalPassiveAbilities',
+    ])
   ),
 )(Characters)

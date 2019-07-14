@@ -28,7 +28,7 @@ const AppNavigator = createDrawerNavigator(
       screen: Banners,
     },
   }, {
-    initialRouteName: BANNERS,
+    initialRouteName: GEAR_LIST,
   }
 )
 
