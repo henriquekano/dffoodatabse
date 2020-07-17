@@ -16,7 +16,7 @@
     "appcenter-analytics": "2.0.0",
     "appcenter-crashes": "2.0.0",
     "cheerio-without-node-native": "0.20.2",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "prop-types": "~15.7.2",
     "ramda": "~0.26.1",
     "react": "16.8.3",
